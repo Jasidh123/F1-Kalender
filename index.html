@@ -720,6 +720,156 @@ header {
 .nav-btn.active       { color: var(--red); }
 .nav-btn.active .nav-icon { transform: scale(1.1); }
 
+/* ── FANTASY ─────────────────────────────────────────────────────────────── */
+.fx-setup-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 28px 20px;
+  text-align: center;
+  margin-top: 8px;
+}
+.fx-setup-icon  { font-size: 48px; margin-bottom: 12px; }
+.fx-setup-title { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:1px; margin-bottom:6px; }
+.fx-setup-sub   { font-size:12px; color:var(--muted); margin-bottom:18px; }
+
+.fx-input {
+  width: 100%; box-sizing: border-box;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--r-sm); color: var(--text);
+  font-size: 16px; padding: 12px 14px;
+  margin-bottom: 14px; outline: none;
+  font-family: 'DM Sans', sans-serif;
+}
+.fx-input:focus { border-color: var(--red); }
+
+.fx-btn-primary {
+  width: 100%; background: var(--red); color: #fff;
+  border: none; border-radius: var(--r-sm);
+  font-size: 14px; font-weight: 700;
+  padding: 13px; letter-spacing: 0.5px;
+  cursor: pointer; font-family:'DM Sans',sans-serif;
+}
+.fx-btn-secondary {
+  background: var(--surface2); color: var(--text);
+  border: 1px solid var(--border); border-radius: var(--r-sm);
+  font-size: 13px; font-weight: 600;
+  padding: 10px 16px; cursor: pointer;
+  font-family:'DM Sans',sans-serif;
+}
+
+.fx-share-bar {
+  display: flex; justify-content: space-between; align-items: center;
+  background: #0d1a0d; border: 1px solid #1e3a1e;
+  border-radius: var(--r-sm); padding: 11px 14px;
+  font-size: 13px; font-weight: 600; color: var(--green);
+  margin-bottom: 14px; cursor: pointer;
+}
+.fx-share-icon { font-size: 18px; }
+
+/* Pick panel */
+.fx-pick-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-lg); overflow: hidden; margin-bottom: 14px;
+}
+.fx-pick-header {
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.fx-pick-race   { font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:1px; }
+.fx-pick-meta   { font-size:11px; color:var(--muted); margin-top:2px; }
+.fx-pick-status { font-size:11px; font-weight:700; margin-top:6px; }
+.fx-pick-status.open   { color: var(--green); }
+.fx-pick-status.closed { color: #f97316; }
+.fx-pick-status.scored { color: var(--gold); }
+
+.fx-driver-list { padding: 10px 12px 14px; }
+.fx-driver-slot {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 4px;
+  border-bottom: 1px solid var(--border);
+}
+.fx-driver-slot:last-child { border-bottom: none; }
+.fx-slot-pos {
+  font-family:'Bebas Neue',sans-serif; font-size:18px;
+  color:var(--muted); min-width:24px; text-align:center;
+}
+.fx-slot-pos.p1 { color:var(--gold); }
+.fx-slot-pos.p2 { color:var(--silver); }
+.fx-slot-pos.p3 { color:var(--bronze); }
+
+.fx-driver-select {
+  flex: 1; background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 8px; color: var(--text); font-size:14px;
+  padding: 8px 10px; font-family:'DM Sans',sans-serif;
+  appearance: none; -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23666' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+  padding-right: 28px;
+}
+.fx-driver-select:focus { outline:none; border-color:var(--red); }
+.fx-driver-select option { background: #1a1a1a; }
+
+.fx-slot-pts {
+  font-family:'Bebas Neue',sans-serif; font-size:16px;
+  min-width:32px; text-align:right;
+}
+.fx-slot-pts.hit  { color: var(--green); }
+.fx-slot-pts.near { color: var(--gold); }
+.fx-slot-pts.miss { color: var(--muted); }
+
+.fx-result-badge {
+  font-size:10px; font-weight:700; padding:2px 7px;
+  border-radius:99px; min-width:20px; text-align:center;
+}
+.fx-result-badge.exact { background:#14532d; color:#4ade80; }
+.fx-result-badge.close { background:#422006; color:#fb923c; }
+.fx-result-badge.wrong { background:#1a1a1a; color:#555; }
+
+.fx-submit-row {
+  padding: 0 12px 14px;
+  display:flex; gap:8px; align-items:center;
+}
+.fx-my-pts {
+  flex:1; font-family:'Bebas Neue',sans-serif;
+  font-size:16px; color:var(--muted);
+}
+.fx-my-pts span { color:var(--green); font-size:22px; }
+
+/* Leaderboard */
+.fx-lb-title {
+  font-family:'Bebas Neue',sans-serif; font-size:18px;
+  letter-spacing:1.5px; color:var(--muted);
+  margin: 18px 0 10px; padding: 0 2px;
+}
+.fx-lb-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-lg); overflow: hidden;
+}
+.fx-lb-row {
+  display:flex; align-items:center; gap:12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.fx-lb-row:last-child { border-bottom:none; }
+.fx-lb-row.fx-lb-me { background: rgba(225,6,0,0.07); border-left:3px solid var(--red); }
+.fx-lb-rank {
+  font-family:'Bebas Neue',sans-serif; font-size:22px;
+  min-width:28px; text-align:center;
+}
+.fx-lb-rank.r1 { color:var(--gold); }
+.fx-lb-rank.r2 { color:var(--silver); }
+.fx-lb-rank.r3 { color:var(--bronze); }
+.fx-lb-name  { flex:1; font-size:14px; font-weight:600; }
+.fx-lb-races { font-size:11px; color:var(--muted); margin-top:1px; }
+.fx-lb-pts   { font-family:'Bebas Neue',sans-serif; font-size:26px; color:var(--text); }
+.fx-lb-pts-label { font-size:9px; color:var(--muted); text-align:right; letter-spacing:0.5px; }
+
+.fx-empty {
+  text-align:center; padding:28px 16px;
+  color:var(--muted); font-size:13px;
+}
+
 /* ── ANIMS ───────────────────────────────────────────────────────────────── */
 @keyframes pulse {
   0%,100% { opacity:1; }
@@ -758,6 +908,38 @@ header {
   </div>
 </div>
 
+<!-- FANTASY PAGE -->
+<div class="container" id="page-fantasy" style="display:none">
+  <div class="page-title">FANTASY</div>
+  <div class="page-subtitle" id="fantasy-subtitle">Tävla med vänner – gissa topp 10</div>
+
+  <!-- Setup screen (no nickname yet) -->
+  <div id="fantasy-setup">
+    <div class="fx-setup-card">
+      <div class="fx-setup-icon">🏎️</div>
+      <div class="fx-setup-title">Välj ditt smeknamn</div>
+      <div class="fx-setup-sub">Delas med alla som har samma länk</div>
+      <input id="fx-name-input" class="fx-input" type="text" maxlength="20" placeholder="T.ex. SpeedKing88" autocomplete="off" />
+      <button class="fx-btn-primary" onclick="fantasySetName()">Sätt namn & börja tävla</button>
+    </div>
+  </div>
+
+  <!-- Main fantasy content -->
+  <div id="fantasy-main" style="display:none">
+    <!-- Share banner -->
+    <div class="fx-share-bar" onclick="fantasyShare()">
+      <span>🔗 Dela länk med vänner</span>
+      <span class="fx-share-icon">⎘</span>
+    </div>
+
+    <!-- Pick panel for next race -->
+    <div id="fx-pick-panel"></div>
+
+    <!-- Leaderboard -->
+    <div id="fx-leaderboard"></div>
+  </div>
+</div>
+
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
   <button class="nav-btn active" id="nav-calendar"  onclick="showPage('calendar')">
@@ -765,6 +947,9 @@ header {
   </button>
   <button class="nav-btn"        id="nav-standings" onclick="showPage('standings')">
     <span class="nav-icon">🏆</span>Ställningar
+  </button>
+  <button class="nav-btn"        id="nav-fantasy"   onclick="showPage('fantasy')">
+    <span class="nav-icon">🎮</span>Fantasy
   </button>
   <button class="nav-btn"        id="nav-notify"    onclick="handleNotifyBtn()">
     <span class="nav-icon" id="notify-icon">🔔</span>
@@ -1978,11 +2163,15 @@ function buildCard(race) {
 
 // ─── PAGE NAVIGATION ─────────────────────────────────────────────────────────
 function showPage(page) {
-  document.getElementById('page-calendar').style.display  = page === 'calendar'  ? '' : 'none';
-  document.getElementById('page-standings').style.display = page === 'standings' ? '' : 'none';
-  document.getElementById('nav-calendar').classList.toggle('active',  page === 'calendar');
-  document.getElementById('nav-standings').classList.toggle('active', page === 'standings');
-  if (page === 'standings') showStandings(currentStandingsTab);
+  document.getElementById('page-calendar').style.display  = page==='calendar'  ? '' : 'none';
+  document.getElementById('page-standings').style.display = page==='standings' ? '' : 'none';
+  document.getElementById('page-fantasy').style.display   = page==='fantasy'   ? '' : 'none';
+  document.getElementById('nav-calendar').classList.toggle('active',  page==='calendar');
+  document.getElementById('nav-standings').classList.toggle('active', page==='standings');
+  document.getElementById('nav-fantasy').classList.toggle('active',   page==='fantasy');
+  document.getElementById('nav-notify').classList.remove('active');
+  if (page==='standings') showStandings(currentStandingsTab);
+  if (page==='fantasy')   fantasyInit();
 }
 
 async function showStandings(type) {
@@ -2165,6 +2354,356 @@ function showToast(msg) {
   t.style.opacity = '1';
   clearTimeout(t._tid);
   t._tid = setTimeout(() => { t.style.opacity = '0'; }, 3200);
+}
+
+// ─── FANTASY ─────────────────────────────────────────────────────────────────
+const JSONBIN_BASE = 'https://api.jsonbin.io/v3';
+const JSONBIN_KEY  = '$2a$10$ZNzSwGMKvn5gi51cnaxTFuCtZnVoXHaRCHANWihXDlH2y.OiZS/.6';
+const FX_NAME_KEY  = 'fx_nickname';
+const FX_BIN_KEY   = 'fx_bin_id';
+
+// ── 2026 driver list ──────────────────────────────────────────────────────────
+const FX_DRIVERS = [
+  'M. Verstappen','L. Norris','C. Leclerc','O. Piastri','C. Sainz',
+  'G. Russell','L. Hamilton','F. Alonso','L. Stroll','P. Gasly',
+  'E. Ocon','V. Bottas','N. Hülkenberg','Y. Tsunoda','A. Albon',
+  'Z. Guanyu','L. Lawson','O. Bearman','G. Bortoleto','A. Doohan',
+];
+
+// ── Points system ─────────────────────────────────────────────────────────────
+// Exact position: 15p | ±1: 8p | ±2: 4p | ±3: 2p | Wrong: 0p
+// Bonus: guessed P1 correctly = +10p extra
+function calcPoints(picks, results) {
+  // picks & results: arrays of driver names, index = position-1
+  let total = 0;
+  const detail = [];
+  for (let i = 0; i < 10; i++) {
+    const pick   = picks[i];
+    const actual = results[i];
+    if (!pick || pick === '') { detail.push({ pts:0, type:'miss' }); continue; }
+    const actualPos = results.indexOf(pick);
+    if (actualPos === -1) { detail.push({ pts:0, type:'miss' }); continue; }
+    const diff = Math.abs(actualPos - i);
+    let pts = diff === 0 ? 15 : diff === 1 ? 8 : diff === 2 ? 4 : diff === 3 ? 2 : 0;
+    const type = diff === 0 ? 'exact' : diff <= 2 ? 'close' : 'miss';
+    total += pts;
+    detail.push({ pts, type, actualPos });
+  }
+  // P1 bonus
+  if (picks[0] && picks[0] === results[0]) total += 10;
+  return { total, detail };
+}
+
+// ── JSONBin helpers ───────────────────────────────────────────────────────────
+async function fxGetBin(binId) {
+  try {
+    const r = await fetch(`${JSONBIN_BASE}/b/${binId}/latest`, {
+      headers: { 'X-Access-Key': JSONBIN_KEY },
+      signal: AbortSignal.timeout(8000)
+    });
+    if (!r.ok) return null;
+    const j = await r.json();
+    return j.record;
+  } catch(e) { return null; }
+}
+
+async function fxUpdateBin(binId, data) {
+  try {
+    const r = await fetch(`${JSONBIN_BASE}/b/${binId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type':'application/json', 'X-Access-Key': JSONBIN_KEY },
+      body: JSON.stringify(data),
+      signal: AbortSignal.timeout(10000)
+    });
+    return r.ok;
+  } catch(e) { return false; }
+}
+
+async function fxCreateBin() {
+  try {
+    const r = await fetch(`${JSONBIN_BASE}/b`, {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'X-Access-Key': JSONBIN_KEY, 'X-Bin-Name':'F1-2026-Fantasy' },
+      body: JSON.stringify({ players:{}, picks:{}, results:{} }),
+      signal: AbortSignal.timeout(10000)
+    });
+    if (!r.ok) return null;
+    const j = await r.json();
+    return j.metadata?.id || null;
+  } catch(e) { return null; }
+}
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let fxBinId   = null;
+let fxNick    = null;
+let fxData    = null; // { players:{nick:{totalPts,races}}, picks:{round:{nick:[...10]}}, results:{round:[...10]} }
+let fxLoading = false;
+
+function fxNextRace() {
+  return RACES_2026.find(r => !isPast(r)) || RACES_2026[RACES_2026.length-1];
+}
+
+function fxIsLocked(race) {
+  // Picks locked 1h before FP1
+  const fp1 = getSessions(race).find(s=>s.key==='fp1');
+  if (!fp1) return false;
+  return new Date() >= new Date(fp1.dt.getTime() - 3600000);
+}
+
+// ── Share ─────────────────────────────────────────────────────────────────────
+function fantasyShare() {
+  if (!fxBinId) return;
+  const url = location.href.split('#')[0] + '#fx=' + fxBinId;
+  if (navigator.share) {
+    navigator.share({ title:'F1 2026 Fantasy', text:'Tävla om topp 10! 🏎️', url });
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(url);
+    showToast('🔗 Länk kopierad!');
+  }
+}
+
+// ── Setup ─────────────────────────────────────────────────────────────────────
+async function fantasySetName() {
+  const val = document.getElementById('fx-name-input').value.trim();
+  if (!val) { showToast('Ange ett smeknamn!'); return; }
+  fxNick = val;
+  localStorage.setItem(FX_NAME_KEY, fxNick);
+  await fantasyInit(true);
+}
+
+async function fantasyInit(fromSetup=false) {
+  fxNick = fxNick || localStorage.getItem(FX_NAME_KEY);
+
+  // Check URL hash for bin id
+  const hash = location.hash.match(/#fx=([a-f0-9]+)/i);
+  fxBinId = hash?.[1] || localStorage.getItem(FX_BIN_KEY);
+
+  if (!fxNick) {
+    document.getElementById('fantasy-setup').style.display = '';
+    document.getElementById('fantasy-main').style.display  = 'none';
+    return;
+  }
+
+  document.getElementById('fantasy-setup').style.display = 'none';
+  document.getElementById('fantasy-main').style.display  = '';
+  document.getElementById('fx-pick-panel').innerHTML =
+    '<div class="loading"><div class="spinner"></div>Laddar fantasy...</div>';
+
+  if (!fxBinId) {
+    // Create new bin
+    showToast('🚀 Skapar fantasy-liga...');
+    fxBinId = await fxCreateBin();
+    if (!fxBinId) {
+      document.getElementById('fx-pick-panel').innerHTML =
+        '<div class="error-msg" style="margin:12px">⚠ Kunde inte skapa liga. Kontrollera nätverket.</div>';
+      return;
+    }
+    localStorage.setItem(FX_BIN_KEY, fxBinId);
+    // Update URL hash
+    history.replaceState(null,'', location.href.split('#')[0] + '#fx=' + fxBinId);
+  } else {
+    localStorage.setItem(FX_BIN_KEY, fxBinId);
+    history.replaceState(null,'', location.href.split('#')[0] + '#fx=' + fxBinId);
+  }
+
+  // Load data
+  fxData = await fxGetBin(fxBinId);
+  if (!fxData) fxData = { players:{}, picks:{}, results:{} };
+
+  // Register player
+  if (!fxData.players[fxNick]) {
+    fxData.players[fxNick] = { totalPts:0, races:0 };
+    await fxUpdateBin(fxBinId, fxData);
+  }
+
+  await fxScoreAll(); // auto-score any completed races
+  fxRender();
+}
+
+// ── Auto-score completed races ────────────────────────────────────────────────
+async function fxScoreAll() {
+  if (!fxData) return;
+  for (const race of RACES_2026) {
+    if (!isPast(race)) continue;
+    const rk = String(race.round);
+    if (fxData.results?.[rk]) continue; // already have results
+    // Fetch actual results from Jolpica
+    try {
+      const r = await fetch(`https://api.jolpi.ca/ergast/f1/2026/${race.round}/results/`,
+        { signal: AbortSignal.timeout(8000) });
+      if (!r.ok) continue;
+      const j = await r.json();
+      const res = j?.MRData?.RaceTable?.Races?.[0]?.Results;
+      if (!res?.length) continue;
+      const top10 = res.slice(0,10).map(r =>
+        r.Driver.givenName[0]+'. '+r.Driver.familyName
+      );
+      if (!fxData.results) fxData.results = {};
+      fxData.results[rk] = top10;
+
+      // Score all players who made picks for this race
+      const racePicks = fxData.picks?.[rk] || {};
+      for (const [nick, picks] of Object.entries(racePicks)) {
+        if (fxData.players[nick]?.scored?.[rk]) continue;
+        const { total } = calcPoints(picks, top10);
+        if (!fxData.players[nick]) fxData.players[nick] = { totalPts:0, races:0 };
+        fxData.players[nick].totalPts = (fxData.players[nick].totalPts||0) + total;
+        fxData.players[nick].races    = (fxData.players[nick].races||0) + 1;
+        if (!fxData.players[nick].scored) fxData.players[nick].scored = {};
+        fxData.players[nick].scored[rk] = total;
+      }
+    } catch(e) {}
+  }
+  await fxUpdateBin(fxBinId, fxData);
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function fxRender() {
+  if (!fxData) return;
+  fxRenderPickPanel();
+  fxRenderLeaderboard();
+}
+
+function fxRenderPickPanel() {
+  const race   = fxNextRace();
+  const rk     = String(race.round);
+  const locked = fxIsLocked(race);
+  const past   = isPast(race);
+  const myPicks= fxData.picks?.[rk]?.[fxNick] || Array(10).fill('');
+  const actual = fxData.results?.[rk] || null;
+  const scored = fxData.players?.[fxNick]?.scored?.[rk];
+
+  let statusHtml, statusClass;
+  if (actual) {
+    statusHtml  = `✅ Scored — ${scored ?? 0} poäng`;
+    statusClass = 'scored';
+  } else if (locked) {
+    statusHtml  = '🔒 Inlämning stängd — väntar på race';
+    statusClass = 'closed';
+  } else {
+    const fp1 = getSessions(race).find(s=>s.key==='fp1');
+    const deadline = fp1 ? `Stänger ${fmtDate(fp1.dt)} ${fmtTime(fp1.dt)}` : '';
+    statusHtml  = `🟢 Öppen · ${deadline}`;
+    statusClass = 'open';
+  }
+
+  // Build driver slots
+  let slotsHtml = '';
+  for (let i=0; i<10; i++) {
+    const posClass = i===0?'p1':i===1?'p2':i===2?'p3':'';
+    const pick = myPicks[i] || '';
+
+    // If scored, show result badge
+    let badge = '', ptsBadge = '';
+    if (actual) {
+      const actualPos = actual.indexOf(pick);
+      const diff = pick ? Math.abs(actualPos - i) : 99;
+      const type = !pick ? 'miss' : diff===0?'exact':diff<=2?'close':'miss';
+      const pts  = !pick ? 0 : diff===0?15:diff===1?8:diff===2?4:diff===3?2:0;
+      const extra = i===0 && pick && actual[0]===pick ? 10 : 0;
+      badge    = `<span class="fx-result-badge ${type}">${actual[i]||'—'}</span>`;
+      ptsBadge = `<span class="fx-slot-pts ${type}">${pts+extra>0?'+':''}${pts+extra||'·'}</span>`;
+    }
+
+    // Dropdown or locked display
+    let input;
+    if (locked || actual) {
+      input = `<div class="fx-driver-select" style="background:transparent;border-color:var(--border);color:${pick?'var(--text)':'var(--muted)'}">
+        ${pick || '—'}</div>`;
+    } else {
+      const opts = FX_DRIVERS.map(d =>
+        `<option value="${d}" ${d===pick?'selected':''}>${d}</option>`
+      ).join('');
+      input = `<select class="fx-driver-select" onchange="fxUpdatePick(${race.round},${i},this.value)">
+        <option value="">— Välj förare —</option>${opts}</select>`;
+    }
+
+    slotsHtml += `
+      <div class="fx-driver-slot">
+        <div class="fx-slot-pos ${posClass}">${i+1}</div>
+        ${input}
+        ${badge}
+        ${ptsBadge}
+      </div>`;
+  }
+
+  // Total pts preview
+  let totalPreview = '';
+  if (!actual && !locked) {
+    const validPicks = myPicks.filter(p=>p);
+    totalPreview = `<div class="fx-my-pts">${validPicks.length}/10 valda</div>`;
+  } else if (actual && scored !== undefined) {
+    totalPreview = `<div class="fx-my-pts">Totalt: <span>${scored}</span> poäng</div>`;
+  }
+
+  document.getElementById('fx-pick-panel').innerHTML = `
+    <div class="fx-pick-card">
+      <div class="fx-pick-header">
+        <div class="fx-pick-race">${race.flag} ${race.name}</div>
+        <div class="fx-pick-meta">${race.circuit} · ${race.raceDate}</div>
+        <div class="fx-pick-status ${statusClass}">${statusHtml}</div>
+      </div>
+      <div class="fx-driver-list">${slotsHtml}</div>
+      <div class="fx-submit-row">
+        ${totalPreview}
+        ${!locked && !actual ? `<button class="fx-btn-secondary" onclick="fxSavePicks(${race.round})">💾 Spara gissningar</button>` : ''}
+      </div>
+    </div>`;
+}
+
+function fxRenderLeaderboard() {
+  const players = fxData?.players || {};
+  const sorted  = Object.entries(players)
+    .sort((a,b) => (b[1].totalPts||0) - (a[1].totalPts||0));
+
+  if (!sorted.length) {
+    document.getElementById('fx-leaderboard').innerHTML =
+      '<div class="fx-empty">Inga spelare ännu — dela länken! 🏎️</div>';
+    return;
+  }
+
+  const rankClass = ['r1','r2','r3'];
+  const rows = sorted.map(([nick, p], i) => {
+    const isMe = nick === fxNick;
+    return `
+      <div class="fx-lb-row${isMe?' fx-lb-me':''}">
+        <div class="fx-lb-rank ${rankClass[i]||''}">${i+1}</div>
+        <div>
+          <div class="fx-lb-name">${isMe?'👤 ':''} ${nick}</div>
+          <div class="fx-lb-races">${p.races||0} lopp spelade</div>
+        </div>
+        <div style="text-align:right">
+          <div class="fx-lb-pts">${p.totalPts||0}</div>
+          <div class="fx-lb-pts-label">POÄNG</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  document.getElementById('fx-leaderboard').innerHTML = `
+    <div class="fx-lb-title">🏆 STÄLLNING</div>
+    <div class="fx-lb-card">${rows}</div>`;
+}
+
+async function fxUpdatePick(round, pos, driver) {
+  const rk = String(round);
+  if (!fxData.picks)        fxData.picks = {};
+  if (!fxData.picks[rk])    fxData.picks[rk] = {};
+  if (!fxData.picks[rk][fxNick]) fxData.picks[rk][fxNick] = Array(10).fill('');
+  fxData.picks[rk][fxNick][pos] = driver;
+  // Update preview count
+  const valid = fxData.picks[rk][fxNick].filter(p=>p).length;
+  const el = document.querySelector('.fx-my-pts');
+  if (el) el.textContent = `${valid}/10 valda`;
+}
+
+async function fxSavePicks(round) {
+  const rk = String(round);
+  const picks = fxData.picks?.[rk]?.[fxNick] || [];
+  const valid = picks.filter(p=>p).length;
+  if (valid < 5) { showToast('Välj minst 5 förare!'); return; }
+  showToast('💾 Sparar...');
+  const ok = await fxUpdateBin(fxBinId, fxData);
+  showToast(ok ? '✅ Gissningar sparade!' : '⚠ Fel vid sparande');
 }
 
 // ─── INIT ────────────────────────────────────────────────────────────────────
