@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F1 2026 – Säsongskalender</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #E10600;
+    --red-dark: #a30500;
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --text: #f0f0f0;
+    --muted: #888;
+    --gold: #f5c518;
+    --silver: #c0c0c0;
+    --bronze: #cd7f32;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--surface);
+    border-bottom: 3px solid var(--red);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: var(--red);
+    line-height: 1;
+  }
+
+  .logo span { color: var(--text); }
+
+  .season-badge {
+    background: var(--red);
+    color: white;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+  }
+
+  .header-right {
+    margin-left: auto;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* MAIN LAYOUT */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 16px 64px;
+  }
+
+  .page-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: 3px;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .page-subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 32px;
+    font-weight: 300;
+  }
+
+  /* RACE CARD */
+  .race-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+
+  .race-card:hover {
+    border-color: #444;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+
+  .race-card.live {
+    border-color: var(--red);
+    box-shadow: 0 0 0 1px var(--red);
+  }
+
+  .race-card.upcoming {
+    border-color: #2a3a2a;
+  }
+
+  .race-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    user-select: none;
+  }
+
+  .round-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    min-width: 40px;
+    letter-spacing: 1px;
+  }
+
+  .flag {
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  .race-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .race-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .race-meta {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .race-status {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .badge-live { background: var(--red); color: white; }
+  .badge-done { background: #1e3a1e; color: #5dbd5d; }
+  .badge-upcoming { background: #1a2a1a; color: #4a8a4a; }
+  .badge-sprint { background: #2a1a00; color: #d4882a; }
+
+  .chevron {
+    color: var(--muted);
+    font-size: 14px;
+    transition: transform 0.25s;
+    margin-left: 8px;
+  }
+
+  .race-card.open .chevron { transform: rotate(180deg); }
+
+  /* EXPANDED PANEL */
+  .race-panel {
+    display: none;
+    border-top: 1px solid var(--border);
+    animation: slideDown 0.2s ease;
+  }
+
+  .race-card.open .race-panel { display: block; }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    background: var(--surface2);
+    overflow-x: auto;
+    gap: 0;
+  }
+
+  .tab-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    background: none;
+    border: none;
+    padding: 12px 18px;
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--red); border-bottom-color: var(--red); }
+
+  /* SCHEDULE (upcoming) */
+  .session-schedule {
+    padding: 20px;
+  }
+
+  .session-row {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .session-row:last-child { border-bottom: none; }
+
+  .session-name {
+    font-weight: 500;
+    font-size: 14px;
+    min-width: 140px;
+  }
+
+  .session-time {
+    font-size: 14px;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .session-date {
+    font-size: 13px;
+    color: var(--muted);
+    margin-left: auto;
+  }
+
+  .session-badge {
+    font-size: 11px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    margin-left: 12px;
+    font-weight: 600;
+  }
+
+  .session-past { background: #1e3a1e; color: #5dbd5d; }
+  .session-live-now { background: var(--red); color: white; animation: pulse 1.5s infinite; }
+  .session-upcoming-s { background: #222; color: #888; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; } 50% { opacity: 0.6; }
+  }
+
+  /* RESULTS TABLE */
+  .results-wrapper {
+    padding: 20px;
+  }
+
+  .results-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .results-table th {
+    text-align: left;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 0 8px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .results-table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #1a1a1a;
+    vertical-align: middle;
+  }
+
+  .results-table tr:last-child td { border-bottom: none; }
+
+  .pos-1 { color: var(--gold); font-weight: 700; font-family: 'Bebas Neue', sans-serif; font-size: 16px; }
+  .pos-2 { color: var(--silver); font-weight: 700; font-family: 'Bebas Neue', sans-serif; font-size: 16px; }
+  .pos-3 { color: var(--bronze); font-weight: 700; font-family: 'Bebas Neue', sans-serif; font-size: 16px; }
+  .pos-other { color: var(--muted); font-family: 'Bebas Neue', sans-serif; font-size: 16px; }
+
+  .driver-name { font-weight: 500; }
+  .driver-abbr {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px;
+    letter-spacing: 1px;
+    margin-right: 6px;
+    opacity: 0.5;
+  }
+
+  .team-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+    flex-shrink: 0;
+  }
+
+  .time-col { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+
+  .points-col {
+    text-align: right;
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  /* LOADING */
+  .loading {
+    text-align: center;
+    padding: 32px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .spinner {
+    width: 24px; height: 24px;
+    border: 3px solid #333;
+    border-top-color: var(--red);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin: 0 auto 12px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error-msg {
+    text-align: center;
+    padding: 20px;
+    color: #e05555;
+    font-size: 13px;
+  }
+
+  /* SECTION HEADER */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .month-divider {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 20px 0 8px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+
+  .month-divider:first-child { padding-top: 0; }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .race-name { font-size: 17px; }
+    .results-table { font-size: 12px; }
+    .driver-abbr { display: none; }
+    .results-table th:nth-child(4),
+    .results-table td:nth-child(4) { display: none; }
+  }
+  /* MAIN NAV */
+  .main-nav {
+    display: flex;
+    gap: 4px;
+    margin-left: 16px;
+  }
+  .nav-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    background: none;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 6px;
+    letter-spacing: 0.3px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .nav-btn:hover { background: #222; color: var(--text); }
+  .nav-btn.active { background: var(--red); color: white; }
+
+  /* STANDINGS TABS */
+  .standings-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .std-tab {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .std-tab:hover { border-color: #444; color: var(--text); }
+  .std-tab.active { background: var(--red); border-color: var(--red); color: white; }
+
+  /* STANDINGS TABLE */
+  .standings-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .standings-table th {
+    text-align: left;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 0 12px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .standings-table td {
+    padding: 12px;
+    border-bottom: 1px solid #1a1a1a;
+    vertical-align: middle;
+  }
+  .standings-table tr:last-child td { border-bottom: none; }
+  .standings-table tr:hover td { background: #181818; }
+
+  .pts-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .pts-bar {
+    height: 4px;
+    border-radius: 2px;
+    background: var(--red);
+    min-width: 4px;
+    transition: width 0.4s ease;
+  }
+  .pts-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    color: var(--text);
+    min-width: 48px;
+    text-align: right;
+  }
+  .chg-up   { color: #5dbd5d; font-size: 11px; }
+  .chg-down { color: #e05555; font-size: 11px; }
+  .chg-same { color: #555;    font-size: 11px; }
+
+  .nationality-flag { font-size: 16px; margin-right: 8px; }
+
+  @media (max-width: 600px) {
+    .main-nav { margin-left: 8px; }
+    .nav-btn { padding: 6px 10px; font-size: 12px; }
+    .standings-tabs { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">F1<span> KALENDER</span></div>
+  <div class="season-badge">2026</div>
+  <nav class="main-nav">
+    <button class="nav-btn active" id="nav-calendar" onclick="showPage('calendar')">Kalender</button>
+    <button class="nav-btn" id="nav-standings" onclick="showPage('standings')">Ställningar</button>
+  </nav>
+  <div class="header-right" id="clock">Laddar...</div>
+</header>
+
+<div class="container" id="page-calendar">
+  <div class="page-title">SÄSONG 2026</div>
+  <div class="page-subtitle">24 Grand Prix · Klicka på ett lopp för resultat och tider</div>
+  <div id="races-list"></div>
+</div>
+
+<div class="container" id="page-standings" style="display:none">
+  <div class="page-title">STÄLLNINGAR 2026</div>
+  <div class="page-subtitle">Uppdateras efter varje race</div>
+  <div class="standings-tabs">
+    <button class="std-tab active" id="std-drivers" onclick="showStandings('drivers')">🏆 Förarmästerskap</button>
+    <button class="std-tab" id="std-constructors" onclick="showStandings('constructors')">🔧 Konstruktörer</button>
+  </div>
+  <div id="standings-content">
+    <div class="loading"><div class="spinner"></div>Hämtar ställningar...</div>
+  </div>
+</div>
+
+<script>
+// ─── TEAM COLORS ─────────────────────────────────────────────────────────────
+const TEAM_COLORS = {
+  'Mercedes':'#00D2BE','Red Bull':'#3671C6','Ferrari':'#E8002D',
+  'McLaren':'#FF8000','Aston Martin':'#358C75','Alpine':'#FF87BC',
+  'Williams':'#64C4FF','Racing Bulls':'#6692FF','Haas':'#B6BABD',
+  'Audi':'#999999','Cadillac':'#C4B696',
+};
+
+// ─── RACE CALENDAR 2026 ───────────────────────────────────────────────────────
+const RACES_2026 = [
+  { round:1,  name:'Australiens GP',     flag:'🇦🇺', circuit:'Albert Park',                  dates:['2026-03-06','2026-03-07','2026-03-08'], sprint:false, raceDate:'2026-03-08' },
+  { round:2,  name:'Kinas GP',           flag:'🇨🇳', circuit:'Shanghai International',        dates:['2026-03-13','2026-03-14','2026-03-15'], sprint:true,  raceDate:'2026-03-15' },
+  { round:3,  name:'Japans GP',          flag:'🇯🇵', circuit:'Suzuka',                        dates:['2026-03-27','2026-03-28','2026-03-29'], sprint:false, raceDate:'2026-03-29' },
+  { round:4,  name:'Bahrains GP',        flag:'🇧🇭', circuit:'Bahrain International',         dates:['2026-04-10','2026-04-11','2026-04-12'], sprint:false, raceDate:'2026-04-12' },
+  { round:5,  name:'Saudiarabiens GP',   flag:'🇸🇦', circuit:'Jeddah Corniche',               dates:['2026-04-17','2026-04-18','2026-04-19'], sprint:false, raceDate:'2026-04-19' },
+  { round:6,  name:'Miamis GP',          flag:'🇺🇸', circuit:'Miami International',           dates:['2026-05-01','2026-05-02','2026-05-03'], sprint:true,  raceDate:'2026-05-03' },
+  { round:7,  name:'Kanadas GP',         flag:'🇨🇦', circuit:'Circuit Gilles Villeneuve',     dates:['2026-05-22','2026-05-23','2026-05-24'], sprint:true,  raceDate:'2026-05-24' },
+  { round:8,  name:'Monacos GP',         flag:'🇲🇨', circuit:'Circuit de Monaco',             dates:['2026-06-05','2026-06-06','2026-06-07'], sprint:false, raceDate:'2026-06-07' },
+  { round:9,  name:'Barcelonas GP',      flag:'🇪🇸', circuit:'Circuit de Barcelona-Catalunya',dates:['2026-06-12','2026-06-13','2026-06-14'], sprint:false, raceDate:'2026-06-14' },
+  { round:10, name:'Österrikes GP',      flag:'🇦🇹', circuit:'Red Bull Ring',                 dates:['2026-06-26','2026-06-27','2026-06-28'], sprint:false, raceDate:'2026-06-28' },
+  { round:11, name:'Storbritanniens GP', flag:'🇬🇧', circuit:'Silverstone',                   dates:['2026-07-03','2026-07-04','2026-07-05'], sprint:true,  raceDate:'2026-07-05' },
+  { round:12, name:'Belgiens GP',        flag:'🇧🇪', circuit:'Spa-Francorchamps',             dates:['2026-07-17','2026-07-18','2026-07-19'], sprint:false, raceDate:'2026-07-19' },
+  { round:13, name:'Ungerns GP',         flag:'🇭🇺', circuit:'Hungaroring',                   dates:['2026-07-24','2026-07-25','2026-07-26'], sprint:false, raceDate:'2026-07-26' },
+  { round:14, name:'Hollands GP',        flag:'🇳🇱', circuit:'Zandvoort',                     dates:['2026-08-21','2026-08-22','2026-08-23'], sprint:true,  raceDate:'2026-08-23' },
+  { round:15, name:'Italiens GP',        flag:'🇮🇹', circuit:'Monza',                         dates:['2026-09-04','2026-09-05','2026-09-06'], sprint:false, raceDate:'2026-09-06' },
+  { round:16, name:'Madrids GP',         flag:'🇪🇸', circuit:'Madrid Street Circuit',         dates:['2026-09-11','2026-09-12','2026-09-13'], sprint:false, raceDate:'2026-09-13' },
+  { round:17, name:'Azerbajdzjans GP',   flag:'🇦🇿', circuit:'Baku City Circuit',             dates:['2026-09-25','2026-09-26','2026-09-27'], sprint:false, raceDate:'2026-09-27' },
+  { round:18, name:'Singapores GP',      flag:'🇸🇬', circuit:'Marina Bay Street Circuit',     dates:['2026-10-09','2026-10-10','2026-10-11'], sprint:true,  raceDate:'2026-10-11' },
+  { round:19, name:'USA:s GP',           flag:'🇺🇸', circuit:'Circuit of the Americas',       dates:['2026-10-23','2026-10-24','2026-10-25'], sprint:false, raceDate:'2026-10-25' },
+  { round:20, name:'Mexikos GP',         flag:'🇲🇽', circuit:'Autodromo Hermanos Rodriguez',  dates:['2026-10-30','2026-10-31','2026-11-01'], sprint:false, raceDate:'2026-11-01' },
+  { round:21, name:'Brasiliens GP',      flag:'🇧🇷', circuit:'Interlagos',                    dates:['2026-11-06','2026-11-07','2026-11-08'], sprint:false, raceDate:'2026-11-08' },
+  { round:22, name:'Las Vegas GP',       flag:'🇺🇸', circuit:'Las Vegas Strip Circuit',       dates:['2026-11-20','2026-11-21','2026-11-22'], sprint:false, raceDate:'2026-11-22' },
+  { round:23, name:'Qatars GP',          flag:'🇶🇦', circuit:'Losail International',          dates:['2026-11-27','2026-11-28','2026-11-29'], sprint:false, raceDate:'2026-11-29' },
+  { round:24, name:'Abu Dhabis GP',      flag:'🇦🇪', circuit:'Yas Marina',                    dates:['2026-12-04','2026-12-05','2026-12-06'], sprint:false, raceDate:'2026-12-06' },
+];
+RACES_2026.sort((a,b) => new Date(a.raceDate) - new Date(b.raceDate));
+
+// ─── SESSION TEMPLATES ────────────────────────────────────────────────────────
+const SESSION_TEMPLATES = {
+  normal: [
+    { day:0, h:5,  m:30, label:'FP1 – Fri träning 1',    key:'fp1'   },
+    { day:0, h:9,  m:0,  label:'FP2 – Fri träning 2',    key:'fp2'   },
+    { day:1, h:5,  m:30, label:'FP3 – Lör träning 3',    key:'fp3'   },
+    { day:1, h:9,  m:0,  label:'Kval – Lördag',           key:'quali' },
+    { day:2, h:7,  m:0,  label:'Race – Söndag',           key:'race'  },
+  ],
+  sprint: [
+    { day:0, h:5,  m:30, label:'FP1 – Fredag träning',   key:'fp1'   },
+    { day:0, h:9,  m:0,  label:'Sprint Kval – Fredag',    key:'sq'    },
+    { day:1, h:4,  m:0,  label:'Sprint Race – Lördag',    key:'sprint'},
+    { day:1, h:8,  m:0,  label:'Kval – Lördag',           key:'quali' },
+    { day:2, h:7,  m:0,  label:'Race – Söndag',           key:'race'  },
+  ],
+};
+
+function getSessions(race) {
+  const fri = new Date(race.dates[0] + 'T00:00:00');
+  return (race.sprint ? SESSION_TEMPLATES.sprint : SESSION_TEMPLATES.normal).map(s => {
+    const d = new Date(fri);
+    d.setDate(d.getDate() + s.day);
+    d.setHours(s.h, s.m, 0, 0);
+    return { ...s, dt: d };
+  });
+}
+
+// ─── UTILS ────────────────────────────────────────────────────────────────────
+const WEEKDAYS_SV = ['Sön','Mån','Tis','Ons','Tor','Fre','Lör'];
+const MONTHS_SV   = ['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'];
+function fmtDate(dt) { return `${WEEKDAYS_SV[dt.getDay()]} ${dt.getDate()} ${MONTHS_SV[dt.getMonth()]}`; }
+function fmtTime(dt) { return dt.toLocaleTimeString('sv-SE', { hour:'2-digit', minute:'2-digit' }); }
+function getMonthSV(s) { const d=new Date(s); return MONTHS_SV[d.getMonth()].toUpperCase()+' '+d.getFullYear(); }
+function isLiveWeekend(race) {
+  const now=new Date(), fri=new Date(race.dates[0]+'T00:00:00'), sun=new Date(race.dates[2]+'T23:59:59');
+  return now>=fri && now<=sun;
+}
+function isPast(race) { return new Date(race.raceDate+'T23:59:59') < new Date(); }
+function teamColor(name) {
+  if (!name) return '#888';
+  for (const [k,v] of Object.entries(TEAM_COLORS)) if (name.includes(k)) return v;
+  return '#888';
+}
+function fmtSecs(s) {
+  if (!s && s!==0) return '—';
+  const m=Math.floor(s/60), r=(s%60).toFixed(3);
+  return m>0 ? `${m}:${r.padStart(6,'0')}` : `${Number(s).toFixed(3)}`;
+}
+
+// ─── CLOCK ────────────────────────────────────────────────────────────────────
+function updateClock() {
+  document.getElementById('clock').textContent =
+    new Date().toLocaleString('sv-SE',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+}
+setInterval(updateClock, 1000); updateClock();
+
+// ─── API FETCH ────────────────────────────────────────────────────────────────
+const CACHE = {};
+
+// ── RESULTS: Jolpica first, OpenF1 fallback ───────────────────────────────────
+async function fetchJolpica(round, type) {
+  const seg = {
+    race:'results', quali:'qualifying',
+    fp1:'practice/1', fp2:'practice/2', fp3:'practice/3',
+    sprint:'sprint', sq:'qualifying'
+  }[type] || 'results';
+
+  for (const year of [2026, 2025]) {
+    const rn = year === 2026 ? round : Math.min(round, 24);
+    try {
+      const res = await fetch(`https://api.jolpi.ca/ergast/f1/${year}/${rn}/${seg}/`,
+        { signal: AbortSignal.timeout(8000) });
+      if (!res.ok) continue;
+      const json = await res.json();
+      if (json?.MRData?.RaceTable?.Races?.length > 0)
+        return { source:'jolpica', data: json, type };
+    } catch(e) {}
+  }
+  return null;
+}
+
+const OF1_NAMES = {
+  fp1:'Practice 1', fp2:'Practice 2', fp3:'Practice 3',
+  quali:'Qualifying', sprint:'Sprint', sq:'Sprint Qualifying', race:'Race',
+};
+
+async function fetchOF1(round, type) {
+  const name = OF1_NAMES[type] || 'Race';
+  try {
+    const sessRes = await fetch(
+      `https://api.openf1.org/v1/sessions?year=2026&session_name=${encodeURIComponent(name)}`,
+      { signal: AbortSignal.timeout(8000) });
+    if (!sessRes.ok) return null;
+    const sessions = await sessRes.json();
+    if (!Array.isArray(sessions) || !sessions.length) return null;
+    sessions.sort((a,b) => a.session_key - b.session_key);
+    const sess = sessions[round - 1];
+    if (!sess) return null;
+    const sk = sess.session_key;
+
+    const [posRes, drvRes] = await Promise.all([
+      fetch(`https://api.openf1.org/v1/position?session_key=${sk}`, { signal: AbortSignal.timeout(10000) }),
+      fetch(`https://api.openf1.org/v1/drivers?session_key=${sk}`, { signal: AbortSignal.timeout(8000) }),
+    ]);
+    if (!posRes.ok || !drvRes.ok) return null;
+    const [positions, drivers] = await Promise.all([posRes.json(), drvRes.json()]);
+    if (!positions?.length || !drivers?.length) return null;
+
+    const driverMap = {};
+    drivers.forEach(d => { driverMap[d.driver_number] = d; });
+
+    const finalPos = {};
+    for (const p of positions) {
+      if (!finalPos[p.driver_number] || p.date > finalPos[p.driver_number].date)
+        finalPos[p.driver_number] = p;
+    }
+    const rows = Object.values(finalPos).sort((a,b) => (a.position||99) - (b.position||99));
+    if (!rows.length) return null;
+
+    const lapMap = {};
+    if (['quali','sq','fp1','fp2','fp3'].includes(type)) {
+      try {
+        const lapRes = await fetch(`https://api.openf1.org/v1/laps?session_key=${sk}`, { signal: AbortSignal.timeout(10000) });
+        if (lapRes.ok) {
+          const laps = await lapRes.json();
+          for (const l of laps) {
+            if (!l.lap_duration) continue;
+            if (!lapMap[l.driver_number] || l.lap_duration < lapMap[l.driver_number])
+              lapMap[l.driver_number] = l.lap_duration;
+          }
+        }
+      } catch(e) {}
+    }
+    return { source:'openf1', rows, driverMap, lapMap, type, sk };
+  } catch(e) { return null; }
+}
+
+async function fetchResults(round, type) {
+  const ck = `res_${round}_${type}`;
+  if (CACHE[ck]) return CACHE[ck];
+  const result = await fetchJolpica(round, type) || await fetchOF1(round, type);
+  if (result) CACHE[ck] = result;
+  return result;
+}
+
+// ── STANDINGS ─────────────────────────────────────────────────────────────────
+let standingsCache = {};
+let currentStandingsTab = 'drivers';
+
+const COUNTRY_FLAGS = {
+  'British':'🇬🇧','Dutch':'🇳🇱','Monegasque':'🇲🇨','Spanish':'🇪🇸','Mexican':'🇲🇽',
+  'Finnish':'🇫🇮','Australian':'🇦🇺','Canadian':'🇨🇦','French':'🇫🇷','German':'🇩🇪',
+  'Japanese':'🇯🇵','Chinese':'🇨🇳','Danish':'🇩🇰','Thai':'🇹🇭','American':'🇺🇸',
+  'Italian':'🇮🇹','Brazilian':'🇧🇷','Austrian':'🇦🇹','Belgian':'🇧🇪','New Zealander':'🇳🇿',
+  'Argentine':'🇦🇷','Swiss':'🇨🇭','Polish':'🇵🇱','Bahraini':'🇧🇭','Emirati':'🇦🇪',
+};
+function getFlag(nat) { return COUNTRY_FLAGS[nat] || '🏁'; }
+
+async function fetchStandings(type) {
+  const ck = `std_${type}`;
+  if (standingsCache[ck]) return standingsCache[ck];
+
+  // Source 1: OpenF1 championship endpoints
+  try {
+    const sessRes = await fetch('https://api.openf1.org/v1/sessions?year=2026&session_name=Race',
+      { signal: AbortSignal.timeout(8000) });
+    if (sessRes.ok) {
+      const sessions = await sessRes.json();
+      if (sessions?.length) {
+        sessions.sort((a,b) => b.session_key - a.session_key);
+        const sk = sessions[0].session_key;
+        const ep = type === 'drivers' ? 'championship_drivers' : 'championship_teams';
+        const res = await fetch(`https://api.openf1.org/v1/${ep}?session_key=${sk}`,
+          { signal: AbortSignal.timeout(8000) });
+        if (res.ok) {
+          const data = await res.json();
+          if (data?.length) {
+            standingsCache[ck] = { source:'openf1', data, type };
+            return standingsCache[ck];
+          }
+        }
+      }
+    }
+  } catch(e) {}
+
+  // Source 2: Jolpica
+  const seg = type === 'drivers' ? 'driverstandings' : 'constructorstandings';
+  for (const year of [2026, 2025]) {
+    try {
+      const res = await fetch(`https://api.jolpi.ca/ergast/f1/${year}/${seg}/`,
+        { signal: AbortSignal.timeout(8000) });
+      if (!res.ok) continue;
+      const json = await res.json();
+      const lists = json?.MRData?.StandingsTable?.StandingsLists;
+      if (lists?.length) {
+        standingsCache[ck] = { source:'jolpica', data: lists[0], year, type };
+        return standingsCache[ck];
+      }
+    } catch(e) {}
+  }
+  return null;
+}
+
+// ─── RENDERERS ────────────────────────────────────────────────────────────────
+function posClass(n) { return n===1?'pos-1':n===2?'pos-2':n===3?'pos-3':'pos-other'; }
+
+// OpenF1 results renderer (position-based)
+function renderOF1(data) {
+  const { rows, driverMap, lapMap, type } = data;
+  const isQuali = ['quali','sq'].includes(type);
+  const trs = rows.map(r => {
+    const p = r.position || '—', pn = parseInt(p);
+    const d = driverMap[r.driver_number] || {};
+    const col = d.team_colour ? `#${d.team_colour}` : teamColor(d.team_name||'');
+    const best = lapMap[r.driver_number];
+    const timeCell = `<td class="time-col">${isQuali ? fmtSecs(best) : '—'}</td>`;
+    return `<tr>
+      <td><span class="${posClass(pn)}">${p}</span></td>
+      <td><span class="driver-abbr">${d.name_acronym||''}</span><span class="driver-name">${d.full_name||'#'+r.driver_number}</span></td>
+      <td><span class="team-dot" style="background:${col}"></span>${d.team_name||''}</td>
+      ${timeCell}</tr>`;
+  }).join('');
+  const th = isQuali ? '<th>Bästa tid</th>' : '<th>Gap</th>';
+  return `<div style="font-size:11px;color:#3a7a3a;padding:4px 0 10px;text-align:right">✓ OpenF1 · live positionsdata</div>
+  <table class="results-table">
+    <thead><tr><th>Plac</th><th>Förare</th><th>Stall</th>${th}</tr></thead>
+    <tbody>${trs}</tbody></table>`;
+}
+
+// Jolpica race results
+function renderJolpicaRace(d) {
+  const res = d.MRData.RaceTable.Races[0].Results;
+  if (!res?.length) return '<div class="error-msg">Inga resultat</div>';
+  const trs = res.map(r => {
+    const pn=parseInt(r.position), team=r.Constructor?.name||'';
+    return `<tr>
+      <td><span class="${posClass(pn)}">${r.position}</span></td>
+      <td><span class="driver-abbr">${r.Driver?.code||''}</span><span class="driver-name">${r.Driver?.givenName} ${r.Driver?.familyName}</span></td>
+      <td><span class="team-dot" style="background:${teamColor(team)}"></span>${team}</td>
+      <td class="time-col">${r.Time?.time||r.status||'—'}</td>
+      <td class="points-col">${r.points||'0'}</td></tr>`;
+  }).join('');
+  return `<div style="font-size:11px;color:#555;padding:4px 0 10px;text-align:right">Jolpica Ergast</div>
+  <table class="results-table">
+    <thead><tr><th>Plac</th><th>Förare</th><th>Stall</th><th>Tid/Status</th><th style="text-align:right">Poäng</th></tr></thead>
+    <tbody>${trs}</tbody></table>`;
+}
+
+// Jolpica qualifying
+function renderJolpicaQuali(d) {
+  const res = d.MRData.RaceTable.Races[0].QualifyingResults;
+  if (!res?.length) return '<div class="error-msg">Inga kval-resultat</div>';
+  const trs = res.map(r => {
+    const pn=parseInt(r.position), team=r.Constructor?.name||'';
+    return `<tr>
+      <td><span class="${posClass(pn)}">${r.position}</span></td>
+      <td><span class="driver-abbr">${r.Driver?.code||''}</span><span class="driver-name">${r.Driver?.givenName} ${r.Driver?.familyName}</span></td>
+      <td><span class="team-dot" style="background:${teamColor(team)}"></span>${team}</td>
+      <td class="time-col">${r.Q1||'—'}</td><td class="time-col">${r.Q2||'—'}</td><td class="time-col">${r.Q3||'—'}</td></tr>`;
+  }).join('');
+  return `<div style="font-size:11px;color:#555;padding:4px 0 10px;text-align:right">Jolpica Ergast</div>
+  <table class="results-table">
+    <thead><tr><th>Plac</th><th>Förare</th><th>Stall</th><th>Q1</th><th>Q2</th><th>Q3</th></tr></thead>
+    <tbody>${trs}</tbody></table>`;
+}
+
+// Jolpica practice/sprint
+function renderJolpicaPractice(d) {
+  const rd = d.MRData.RaceTable.Races[0];
+  let res = rd.PracticeResults || rd.SprintResults;
+  if (!res?.length) for (const k of Object.keys(rd)) { if (Array.isArray(rd[k])&&rd[k][0]?.Driver){res=rd[k];break;} }
+  if (!res?.length) return '<div class="error-msg">Inga träningsresultat tillgängliga</div>';
+  const trs = res.map(r => {
+    const pn=parseInt(r.position), team=r.Constructor?.name||'';
+    return `<tr>
+      <td><span class="${posClass(pn)}">${r.position}</span></td>
+      <td><span class="driver-abbr">${r.Driver?.code||''}</span><span class="driver-name">${r.Driver?.givenName} ${r.Driver?.familyName}</span></td>
+      <td><span class="team-dot" style="background:${teamColor(team)}"></span>${team}</td>
+      <td class="time-col">${r.Time?.time||r.status||'—'}</td></tr>`;
+  }).join('');
+  return `<div style="font-size:11px;color:#555;padding:4px 0 10px;text-align:right">Jolpica Ergast</div>
+  <table class="results-table">
+    <thead><tr><th>Plac</th><th>Förare</th><th>Stall</th><th>Tid</th></tr></thead>
+    <tbody>${trs}</tbody></table>`;
+}
+
+function renderResults(data) {
+  if (data.source === 'openf1') return renderOF1(data);
+  const { data:d, type } = data;
+  if (type==='race'||type==='sprint') return renderJolpicaRace(d);
+  if (type==='quali'||type==='sq')    return renderJolpicaQuali(d);
+  return renderJolpicaPractice(d);
+}
+
+// ── Standings renderers ───────────────────────────────────────────────────────
+function stRow(pos, nameHtml, teamHtml, pts, gap, col) {
+  const pc = pos===1?'pos-1':pos===2?'pos-2':pos===3?'pos-3':'pos-other';
+  const leader = parseInt(document.querySelector('.pts-num')?.textContent) || pts;
+  const barW = Math.max(4, Math.round((pts / (window._standingsLeader||pts)) * 220));
+  return `<tr>
+    <td><span class="${pc}" style="font-family:'Bebas Neue',sans-serif;font-size:18px">${pos}</span></td>
+    <td>${nameHtml}</td>
+    <td>
+      <div class="pts-bar-wrap">
+        <div class="pts-bar" style="width:${barW}px;background:${col}"></div>
+        <div class="pts-num">${pts}</div>
+      </div>
+    </td>
+    <td style="color:var(--muted);font-size:12px;text-align:right">${gap}</td>
+  </tr>`;
+}
+
+function renderDriverStandingsOF1(data) {
+  // OpenF1 championship_drivers format
+  const sorted = [...data].sort((a,b) => (a.position||99)-(b.position||99));
+  if (!sorted.length) return '<div class="error-msg">Ingen data</div>';
+  const leader = sorted[0].points || 0;
+  window._standingsLeader = leader;
+  const rows = sorted.map((s,i) => {
+    const pts = s.points || 0;
+    const col = s.team_colour ? `#${s.team_colour}` : teamColor(s.team_name||'');
+    const gap = i===0 ? 'Ledare' : `–${leader-pts}`;
+    const nameHtml = `<div style="display:flex;align-items:center;gap:8px">
+      <div>
+        <div style="font-weight:600;font-size:14px">${s.driver_name||'—'}</div>
+        <div style="font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px;margin-top:2px">
+          <span style="width:8px;height:8px;border-radius:50%;background:${col};display:inline-block"></span>
+          ${s.team_name||''}
+        </div>
+      </div>
+    </div>`;
+    return stRow(s.position||i+1, nameHtml, s.team_name||'', pts, gap, col);
+  }).join('');
+  return `<div style="font-size:11px;color:#3a7a3a;padding:0 0 12px;text-align:right">✓ OpenF1 · direkt efter race</div>
+  <table class="standings-table">
+    <thead><tr><th style="width:48px">Plac</th><th>Förare</th><th>Poäng</th><th style="text-align:right">Gap</th></tr></thead>
+    <tbody>${rows}</tbody></table>`;
+}
+
+function renderConstructorStandingsOF1(data) {
+  const sorted = [...data].sort((a,b) => (a.position||99)-(b.position||99));
+  if (!sorted.length) return '<div class="error-msg">Ingen data</div>';
+  const leader = sorted[0].points || 0;
+  window._standingsLeader = leader;
+  const rows = sorted.map((s,i) => {
+    const pts = s.points || 0;
+    const col = s.team_colour ? `#${s.team_colour}` : teamColor(s.team_name||'');
+    const gap = i===0 ? 'Ledare' : `–${leader-pts}`;
+    const nameHtml = `<div style="display:flex;align-items:center;gap:10px">
+      <div style="width:4px;height:36px;border-radius:2px;background:${col};flex-shrink:0"></div>
+      <div style="font-weight:600;font-size:15px">${s.team_name||'—'}</div>
+    </div>`;
+    return stRow(s.position||i+1, nameHtml, s.team_name||'', pts, gap, col);
+  }).join('');
+  return `<div style="font-size:11px;color:#3a7a3a;padding:0 0 12px;text-align:right">✓ OpenF1 · direkt efter race</div>
+  <table class="standings-table">
+    <thead><tr><th style="width:48px">Plac</th><th>Konstruktör</th><th>Poäng</th><th style="text-align:right">Gap</th></tr></thead>
+    <tbody>${rows}</tbody></table>`;
+}
+
+function renderDriverStandingsJolpica(data, year) {
+  const standings = data.DriverStandings;
+  if (!standings?.length) return '<div class="error-msg">Inga ställningar</div>';
+  const leader = parseInt(standings[0].points);
+  window._standingsLeader = leader;
+  const rows = standings.map((s,i) => {
+    const pts = parseInt(s.points), pos = parseInt(s.position);
+    const team = s.Constructors?.[0]?.name || '';
+    const col = teamColor(team);
+    const gap = i===0 ? 'Ledare' : `–${leader-pts}`;
+    const flag = getFlag(s.Driver?.nationality);
+    const nameHtml = `<div style="display:flex;align-items:center;gap:8px">
+      <span style="font-size:18px">${flag}</span>
+      <div>
+        <div style="font-weight:600;font-size:14px">${s.Driver?.givenName} ${s.Driver?.familyName}</div>
+        <div style="font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px;margin-top:2px">
+          <span style="width:8px;height:8px;border-radius:50%;background:${col};display:inline-block"></span>
+          ${team}
+        </div>
+      </div>
+    </div>`;
+    return stRow(pos, nameHtml, team, pts, gap, col);
+  }).join('');
+  return `<div style="font-size:11px;color:#555;padding:0 0 12px;text-align:right">Jolpica Ergast · ${year} · omgång ${data.round||'?'}</div>
+  <table class="standings-table">
+    <thead><tr><th style="width:48px">Plac</th><th>Förare</th><th>Poäng</th><th style="text-align:right">Gap</th></tr></thead>
+    <tbody>${rows}</tbody></table>`;
+}
+
+function renderConstructorStandingsJolpica(data, year) {
+  const standings = data.ConstructorStandings;
+  if (!standings?.length) return '<div class="error-msg">Inga konstruktörsställningar</div>';
+  const leader = parseInt(standings[0].points);
+  window._standingsLeader = leader;
+  const rows = standings.map((s,i) => {
+    const pts = parseInt(s.points), pos = parseInt(s.position);
+    const col = teamColor(s.Constructor?.name||'');
+    const gap = i===0 ? 'Ledare' : `–${leader-pts}`;
+    const nameHtml = `<div style="display:flex;align-items:center;gap:10px">
+      <div style="width:4px;height:36px;border-radius:2px;background:${col};flex-shrink:0"></div>
+      <div style="font-weight:600;font-size:15px">${s.Constructor?.name||'—'}</div>
+    </div>`;
+    return stRow(pos, nameHtml, s.Constructor?.name||'', pts, gap, col);
+  }).join('');
+  return `<div style="font-size:11px;color:#555;padding:0 0 12px;text-align:right">Jolpica Ergast · ${year} · omgång ${data.round||'?'}</div>
+  <table class="standings-table">
+    <thead><tr><th style="width:48px">Plac</th><th>Konstruktör</th><th>Poäng</th><th style="text-align:right">Gap</th></tr></thead>
+    <tbody>${rows}</tbody></table>`;
+}
+
+// ─── SCHEDULE VIEW ────────────────────────────────────────────────────────────
+function renderSchedule(race) {
+  const now = new Date();
+  const sessions = getSessions(race);
+  return `<div class="session-schedule">
+    ${sessions.map(s => {
+      const past = s.dt < now;
+      const liveNow = !past && Math.abs(s.dt - now) < 2*3600*1000;
+      const badge = liveNow
+        ? '<span class="session-badge session-live-now">LIVE NU</span>'
+        : past
+          ? '<span class="session-badge session-past">Avslutad</span>'
+          : '<span class="session-badge session-upcoming-s">Kommande</span>';
+      return `<div class="session-row" style="cursor:${past?'pointer':'default'}"
+               onclick="${past?`loadTabFor(${race.round},'${s.key}')` : ''}">
+        <div class="session-name">${s.label}</div>
+        <div class="session-time">${fmtTime(s.dt)}</div>
+        ${badge}
+        <div class="session-date">${fmtDate(s.dt)}</div>
+      </div>`;
+    }).join('')}
+    <p style="margin-top:16px;font-size:12px;color:var(--muted)">
+      Tider i svensk lokal tid (CET/CEST). Klicka på avslutade sessioner för resultat.
+    </p>
+  </div>`;
+}
+
+function loadTabFor(round, key) {
+  const card = document.querySelector(`.race-card[data-round="${round}"]`);
+  if (!card) return;
+  if (!card.classList.contains('open')) card.querySelector('.race-header').click();
+  setTimeout(() => { const tab = card.querySelector(`.tab-btn[data-tab="${key}"]`); if (tab) tab.click(); }, 150);
+}
+
+// ─── TAB LOGIC ────────────────────────────────────────────────────────────────
+async function loadTab(card, race, tabKey) {
+  card.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabKey));
+  const content = card.querySelector('.tab-content');
+  const now = new Date();
+
+  if (tabKey === 'schedule') { content.innerHTML = renderSchedule(race); return; }
+
+  const sessions = getSessions(race);
+  const sess = sessions.find(s => s.key === tabKey);
+  const pastSession = sess ? sess.dt < now : new Date(race.raceDate+'T23:59:59') < now;
+
+  if (!pastSession) {
+    content.innerHTML = `<div class="session-schedule">
+      <div class="session-row">
+        <div class="session-name" style="font-size:15px">${sess?.label || tabKey}</div>
+        <div class="session-time">${sess ? fmtTime(sess.dt) : '—'}</div>
+        <span class="session-badge session-upcoming-s">Kommande</span>
+        <div class="session-date">${sess ? fmtDate(sess.dt) : ''}</div>
+      </div>
+      <p style="margin-top:16px;font-size:12px;color:var(--muted)">Resultat visas efter att sessionen är klar.</p>
+    </div>`;
+    return;
+  }
+
+  content.innerHTML = `<div class="loading"><div class="spinner"></div>Hämtar resultat...</div>`;
+  const data = await fetchResults(race.round, tabKey);
+
+  if (!data) {
+    content.innerHTML = `<div class="error-msg">⚠ Inga resultat hittades ännu.
+      <br><span style="font-size:11px;color:#555;display:block;margin-top:6px">
+        Jolpica &amp; OpenF1 kontaktades — försök igen om en stund
+      </span></div>`;
+    return;
+  }
+  content.innerHTML = `<div class="results-wrapper">${renderResults(data)}</div>`;
+}
+
+// ─── BUILD RACE CARD ──────────────────────────────────────────────────────────
+function buildCard(race) {
+  const now = new Date();
+  const past = isPast(race), live = isLiveWeekend(race);
+
+  const statusBadge = live
+    ? '<span class="badge badge-live">🔴 LIVE</span>'
+    : past
+      ? '<span class="badge badge-done">✓ Avslutat</span>'
+      : '<span class="badge badge-upcoming">Kommande</span>';
+  const sprintBadge = race.sprint ? '<span class="badge badge-sprint" style="margin-top:2px">Sprint</span>' : '';
+
+  const fri = new Date(race.dates[0]+'T00:00:00');
+  const sun = new Date(race.dates[2]+'T00:00:00');
+  const dateRange = `${fri.getDate()} – ${sun.getDate()} ${MONTHS_SV[sun.getMonth()].toUpperCase()} ${sun.getFullYear()}`;
+
+  const sessions = getSessions(race);
+  const tabsToShow = [{ key:'schedule', label:'Tider' }];
+
+  if (past || live) {
+    if (race.sprint) {
+      [['fp1','FP1'],['sq','Sprint Kval'],['sprint','Sprint'],['quali','Kval'],['race','Race']].forEach(([k,l]) => {
+        if (sessions.find(s=>s.key===k)?.dt < now) tabsToShow.push({key:k,label:l});
+      });
+    } else {
+      [['fp1','FP1'],['fp2','FP2'],['fp3','FP3'],['quali','Kval'],['race','Race']].forEach(([k,l]) => {
+        if (sessions.find(s=>s.key===k)?.dt < now) tabsToShow.push({key:k,label:l});
+      });
+    }
+  }
+
+  const defaultTab = tabsToShow[tabsToShow.length - 1].key;
+  const card = document.createElement('div');
+  card.className = `race-card${live?' live':''}${!past&&!live?' upcoming':''}`;
+  card.dataset.round = race.round;
+
+  card.innerHTML = `
+    <div class="race-header">
+      <div class="round-num">R${String(race.round).padStart(2,'0')}</div>
+      <div class="flag">${race.flag}</div>
+      <div class="race-info">
+        <div class="race-name">${race.name}</div>
+        <div class="race-meta">${race.circuit} · ${dateRange}</div>
+      </div>
+      <div class="race-status">${statusBadge}${sprintBadge}</div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="race-panel">
+      <div class="tabs">
+        ${tabsToShow.map(t=>`<button class="tab-btn${t.key===defaultTab?' active':''}" data-tab="${t.key}">${t.label}</button>`).join('')}
+      </div>
+      <div class="tab-content"></div>
+    </div>`;
+
+  card.querySelector('.race-header').addEventListener('click', () => {
+    const wasOpen = card.classList.contains('open');
+    card.classList.toggle('open', !wasOpen);
+    if (!wasOpen) loadTab(card, race, card.querySelector('.tab-btn.active')?.dataset.tab || defaultTab);
+  });
+  card.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', e => { e.stopPropagation(); loadTab(card, race, btn.dataset.tab); });
+  });
+  if (live) setTimeout(() => { card.classList.add('open'); loadTab(card, race, defaultTab); }, 300);
+  return card;
+}
+
+// ─── PAGE NAVIGATION ─────────────────────────────────────────────────────────
+function showPage(page) {
+  document.getElementById('page-calendar').style.display  = page === 'calendar'  ? '' : 'none';
+  document.getElementById('page-standings').style.display = page === 'standings' ? '' : 'none';
+  document.getElementById('nav-calendar').classList.toggle('active',  page === 'calendar');
+  document.getElementById('nav-standings').classList.toggle('active', page === 'standings');
+  if (page === 'standings') showStandings(currentStandingsTab);
+}
+
+async function showStandings(type) {
+  currentStandingsTab = type;
+  document.getElementById('std-drivers').classList.toggle('active', type === 'drivers');
+  document.getElementById('std-constructors').classList.toggle('active', type === 'constructors');
+  const content = document.getElementById('standings-content');
+  const ck = `std_${type}`;
+  if (!standingsCache[ck]) {
+    content.innerHTML = '<div class="loading"><div class="spinner"></div>Hämtar ställningar...</div>';
+  }
+  const result = await fetchStandings(type);
+  if (!result) {
+    content.innerHTML = '<div class="error-msg">⚠ Kunde inte hämta ställningar<br><span style="font-size:11px;color:#555;display:block;margin-top:6px">Kontrollera nätverksanslutning – API:erna Jolpica & OpenF1 kontaktades</span></div>';
+    return;
+  }
+  let html = '';
+  if (result.source === 'openf1') {
+    html = type === 'drivers' ? renderDriverStandingsOF1(result.data) : renderConstructorStandingsOF1(result.data);
+  } else {
+    html = type === 'drivers'
+      ? renderDriverStandingsJolpica(result.data, result.year)
+      : renderConstructorStandingsJolpica(result.data, result.year);
+  }
+  content.innerHTML = `<div class="results-wrapper" style="padding:0">${html}</div>`;
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+function init() {
+  const list = document.getElementById('races-list');
+  let currentMonth = '';
+  RACES_2026.forEach(race => {
+    const month = getMonthSV(race.raceDate);
+    if (month !== currentMonth) {
+      currentMonth = month;
+      const div = document.createElement('div');
+      div.className = 'month-divider';
+      div.textContent = month;
+      list.appendChild(div);
+    }
+    list.appendChild(buildCard(race));
+  });
+}
+init();
+</script>
+</body>
+</html>
