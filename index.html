@@ -451,18 +451,117 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   .std-tab.active { background: var(--red); border-color: var(--red); color: white; }
 
-  .standings-table { width:100%; border-collapse:collapse; font-size:13px; }
-  .standings-table th {
-    text-align:left; color:var(--muted); font-size:10px; font-weight:700;
-    letter-spacing:0.5px; text-transform:uppercase; padding:0 10px 10px;
-    border-bottom:1px solid var(--border);
-  }
-  .standings-table td { padding:11px 10px; border-bottom:1px solid #1c1c1c; vertical-align:middle; }
-  .standings-table tr:last-child td { border-bottom:none; }
 
-  .pts-bar-wrap { display:flex; align-items:center; gap:8px; }
-  .pts-bar { height:3px; border-radius:2px; min-width:4px; transition:width 0.4s; }
-  .pts-num { font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--text); min-width:44px; text-align:right; }
+  /* ── STANDINGS CARDS (mobile-first) ─────────────────────────────── */
+  .st-source {
+    font-size: 11px;
+    color: #555;
+    text-align: right;
+    margin-bottom: 12px;
+  }
+
+  .st-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .st-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .st-card--leader {
+    border-color: #3a3a1a;
+    background: #161610;
+  }
+
+  .st-pos {
+    width: 28px;
+    flex-shrink: 0;
+    text-align: center;
+  }
+
+  .st-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .st-name {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 2px;
+  }
+
+  .st-flag { font-size: 16px; flex-shrink: 0; }
+
+  .st-teambar {
+    width: 3px;
+    height: 18px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .st-driver {
+    font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .st-team {
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .st-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: inline-block;
+  }
+
+  .st-bar-track {
+    height: 3px;
+    background: #222;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .st-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+
+  .st-right {
+    flex-shrink: 0;
+    text-align: right;
+    min-width: 52px;
+  }
+
+  .st-pts {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .st-gap {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
 
   /* ── UTILITIES ───────────────────────────────────────────────────── */
   /* Prevent iOS font size auto-adjust */
@@ -847,119 +946,85 @@ function renderResults(data) {
 }
 
 // ── Standings renderers ───────────────────────────────────────────────────────
-function stRow(pos, nameHtml, teamHtml, pts, gap, col) {
+// Shared card-based row — works perfectly on iPhone width
+function stCard(pos, name, team, teamCol, flag, pts, leader, gap) {
   const pc = pos===1?'pos-1':pos===2?'pos-2':pos===3?'pos-3':'pos-other';
-  const leader = parseInt(document.querySelector('.pts-num')?.textContent) || pts;
-  const barW = Math.max(4, Math.round((pts / (window._standingsLeader||pts)) * 220));
-  return `<tr>
-    <td><span class="${pc}" style="font-family:'Bebas Neue',sans-serif;font-size:18px">${pos}</span></td>
-    <td>${nameHtml}</td>
-    <td>
-      <div class="pts-bar-wrap">
-        <div class="pts-bar" style="width:${barW}px;background:${col}"></div>
-        <div class="pts-num">${pts}</div>
+  const barW = leader > 0 ? Math.round((pts / leader) * 100) : 0;
+  const isLeader = pos === 1;
+  return `
+  <div class="st-card${isLeader?' st-card--leader':''}">
+    <div class="st-pos"><span class="${pc}">${pos}</span></div>
+    <div class="st-info">
+      <div class="st-name">
+        ${flag ? `<span class="st-flag">${flag}</span>` : `<span class="st-teambar" style="background:${teamCol}"></span>`}
+        <span class="st-driver">${name}</span>
       </div>
-    </td>
-    <td style="color:var(--muted);font-size:12px;text-align:right">${gap}</td>
-  </tr>`;
+      <div class="st-team">
+        <span class="st-dot" style="background:${teamCol}"></span>
+        ${team}
+      </div>
+      <div class="st-bar-track">
+        <div class="st-bar-fill" style="width:${barW}%;background:${teamCol}"></div>
+      </div>
+    </div>
+    <div class="st-right">
+      <div class="st-pts">${pts}</div>
+      <div class="st-gap">${gap}</div>
+    </div>
+  </div>`;
 }
 
 function renderDriverStandingsOF1(data) {
-  // OpenF1 championship_drivers format
   const sorted = [...data].sort((a,b) => (a.position||99)-(b.position||99));
   if (!sorted.length) return '<div class="error-msg">Ingen data</div>';
   const leader = sorted[0].points || 0;
-  window._standingsLeader = leader;
-  const rows = sorted.map((s,i) => {
-    const pts = s.points || 0;
+  const cards = sorted.map((s,i) => {
     const col = s.team_colour ? `#${s.team_colour}` : teamColor(s.team_name||'');
-    const gap = i===0 ? 'Ledare' : `–${leader-pts}`;
-    const nameHtml = `<div style="display:flex;align-items:center;gap:8px">
-      <div>
-        <div style="font-weight:600;font-size:14px">${s.driver_name||'—'}</div>
-        <div style="font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px;margin-top:2px">
-          <span style="width:8px;height:8px;border-radius:50%;background:${col};display:inline-block"></span>
-          ${s.team_name||''}
-        </div>
-      </div>
-    </div>`;
-    return stRow(s.position||i+1, nameHtml, s.team_name||'', pts, gap, col);
+    const gap = i===0 ? 'Ledare' : `–${leader - s.points}`;
+    return stCard(s.position||i+1, s.driver_name||'—', s.team_name||'', col, null, s.points||0, leader, gap);
   }).join('');
-  return `<div style="font-size:11px;color:#3a7a3a;padding:0 0 12px;text-align:right">✓ OpenF1 · direkt efter race</div>
-  <table class="standings-table">
-    <thead><tr><th style="width:48px">Plac</th><th>Förare</th><th>Poäng</th><th style="text-align:right">Gap</th></tr></thead>
-    <tbody>${rows}</tbody></table>`;
+  return `<div class="st-source">✓ OpenF1 · uppdateras direkt</div><div class="st-list">${cards}</div>`;
 }
 
 function renderConstructorStandingsOF1(data) {
   const sorted = [...data].sort((a,b) => (a.position||99)-(b.position||99));
   if (!sorted.length) return '<div class="error-msg">Ingen data</div>';
   const leader = sorted[0].points || 0;
-  window._standingsLeader = leader;
-  const rows = sorted.map((s,i) => {
-    const pts = s.points || 0;
+  const cards = sorted.map((s,i) => {
     const col = s.team_colour ? `#${s.team_colour}` : teamColor(s.team_name||'');
-    const gap = i===0 ? 'Ledare' : `–${leader-pts}`;
-    const nameHtml = `<div style="display:flex;align-items:center;gap:10px">
-      <div style="width:4px;height:36px;border-radius:2px;background:${col};flex-shrink:0"></div>
-      <div style="font-weight:600;font-size:15px">${s.team_name||'—'}</div>
-    </div>`;
-    return stRow(s.position||i+1, nameHtml, s.team_name||'', pts, gap, col);
+    const gap = i===0 ? 'Ledare' : `–${leader - s.points}`;
+    return stCard(s.position||i+1, s.team_name||'—', '', col, null, s.points||0, leader, gap);
   }).join('');
-  return `<div style="font-size:11px;color:#3a7a3a;padding:0 0 12px;text-align:right">✓ OpenF1 · direkt efter race</div>
-  <table class="standings-table">
-    <thead><tr><th style="width:48px">Plac</th><th>Konstruktör</th><th>Poäng</th><th style="text-align:right">Gap</th></tr></thead>
-    <tbody>${rows}</tbody></table>`;
+  return `<div class="st-source">✓ OpenF1 · uppdateras direkt</div><div class="st-list">${cards}</div>`;
 }
 
 function renderDriverStandingsJolpica(data, year) {
   const standings = data.DriverStandings;
   if (!standings?.length) return '<div class="error-msg">Inga ställningar</div>';
   const leader = parseInt(standings[0].points);
-  window._standingsLeader = leader;
-  const rows = standings.map((s,i) => {
-    const pts = parseInt(s.points), pos = parseInt(s.position);
+  const cards = standings.map((s,i) => {
     const team = s.Constructors?.[0]?.name || '';
-    const col = teamColor(team);
-    const gap = i===0 ? 'Ledare' : `–${leader-pts}`;
+    const col  = teamColor(team);
+    const pts  = parseInt(s.points);
+    const gap  = i===0 ? 'Ledare' : `–${leader-pts}`;
     const flag = getFlag(s.Driver?.nationality);
-    const nameHtml = `<div style="display:flex;align-items:center;gap:8px">
-      <span style="font-size:18px">${flag}</span>
-      <div>
-        <div style="font-weight:600;font-size:14px">${s.Driver?.givenName} ${s.Driver?.familyName}</div>
-        <div style="font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px;margin-top:2px">
-          <span style="width:8px;height:8px;border-radius:50%;background:${col};display:inline-block"></span>
-          ${team}
-        </div>
-      </div>
-    </div>`;
-    return stRow(pos, nameHtml, team, pts, gap, col);
+    const name = `${s.Driver?.givenName} ${s.Driver?.familyName}`;
+    return stCard(parseInt(s.position), name, team, col, flag, pts, leader, gap);
   }).join('');
-  return `<div style="font-size:11px;color:#555;padding:0 0 12px;text-align:right">Jolpica Ergast · ${year} · omgång ${data.round||'?'}</div>
-  <table class="standings-table">
-    <thead><tr><th style="width:48px">Plac</th><th>Förare</th><th>Poäng</th><th style="text-align:right">Gap</th></tr></thead>
-    <tbody>${rows}</tbody></table>`;
+  return `<div class="st-source">Jolpica Ergast · ${year} · omgång ${data.round||'?'}</div><div class="st-list">${cards}</div>`;
 }
 
 function renderConstructorStandingsJolpica(data, year) {
   const standings = data.ConstructorStandings;
   if (!standings?.length) return '<div class="error-msg">Inga konstruktörsställningar</div>';
   const leader = parseInt(standings[0].points);
-  window._standingsLeader = leader;
-  const rows = standings.map((s,i) => {
-    const pts = parseInt(s.points), pos = parseInt(s.position);
+  const cards = standings.map((s,i) => {
     const col = teamColor(s.Constructor?.name||'');
+    const pts = parseInt(s.points);
     const gap = i===0 ? 'Ledare' : `–${leader-pts}`;
-    const nameHtml = `<div style="display:flex;align-items:center;gap:10px">
-      <div style="width:4px;height:36px;border-radius:2px;background:${col};flex-shrink:0"></div>
-      <div style="font-weight:600;font-size:15px">${s.Constructor?.name||'—'}</div>
-    </div>`;
-    return stRow(pos, nameHtml, s.Constructor?.name||'', pts, gap, col);
+    return stCard(parseInt(s.position), s.Constructor?.name||'—', '', col, null, pts, leader, gap);
   }).join('');
-  return `<div style="font-size:11px;color:#555;padding:0 0 12px;text-align:right">Jolpica Ergast · ${year} · omgång ${data.round||'?'}</div>
-  <table class="standings-table">
-    <thead><tr><th style="width:48px">Plac</th><th>Konstruktör</th><th>Poäng</th><th style="text-align:right">Gap</th></tr></thead>
-    <tbody>${rows}</tbody></table>`;
+  return `<div class="st-source">Jolpica Ergast · ${year} · omgång ${data.round||'?'}</div><div class="st-list">${cards}</div>`;
 }
 
 // ─── SCHEDULE VIEW ────────────────────────────────────────────────────────────
