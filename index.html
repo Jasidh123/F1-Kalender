@@ -563,6 +563,157 @@ document.addEventListener('DOMContentLoaded', () => {
     margin-top: 2px;
   }
 
+  /* ── LIVE TAB ────────────────────────────────────────────────────── */
+  .live-wrap { padding: 12px 12px 16px; }
+
+  .live-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--red);
+  }
+  .live-dot {
+    width: 8px; height: 8px;
+    background: var(--red);
+    border-radius: 50%;
+    animation: pulse 1.2s infinite;
+  }
+  .live-lap {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: right;
+  }
+  .live-lap strong {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    color: var(--text);
+  }
+
+  /* driver row — 3-col grid optimised for 390px iPhone */
+  .live-row {
+    display: grid;
+    grid-template-columns: 26px minmax(0,1fr) 68px;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 0;
+    border-bottom: 1px solid #1c1c1c;
+    /* nice big touch area */
+    min-height: 52px;
+  }
+  .live-row:last-child { border-bottom: none; }
+
+  .live-pos {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    text-align: center;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  /* middle column: driver info — must not overflow */
+  .live-driver-block {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .live-name-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 5px;
+    overflow: hidden;
+  }
+  .live-bar {
+    width: 3px; height: 16px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  /* Show abbreviation only — full name hidden to save space */
+  .live-abbr {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    letter-spacing: 1px;
+    flex-shrink: 0;
+  }
+  .live-name {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .live-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: nowrap;
+    overflow: hidden;
+  }
+
+  /* tyre chip */
+  .tyre-chip {
+    font-size: 11px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .tyre-SOFT     { background:#c0392b; color:#fff; }
+  .tyre-MEDIUM   { background:#d4ac0d; color:#000; }
+  .tyre-HARD     { background:#d5d8dc; color:#000; }
+  .tyre-INTER    { background:#27ae60; color:#fff; }
+  .tyre-WET      { background:#2980b9; color:#fff; }
+  .tyre-UNKNOWN  { background:#333;    color:#777; }
+
+  .live-pits {
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* right column: gap + laptime — fixed width, right-aligned */
+  .live-right {
+    text-align: right;
+    min-width: 0;
+  }
+  .live-gap-val {
+    font-size: 13px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+    white-space: nowrap;
+  }
+  .live-laptime {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 3px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .live-laptime.fastest { color: #c44dff; font-weight: 600; }
+
+  .live-refresh-note {
+    text-align: center;
+    font-size: 11px;
+    color: #3a3a3a;
+    margin-top: 14px;
+    padding-top: 10px;
+    border-top: 1px solid #1c1c1c;
+  }
+
   /* ── UTILITIES ───────────────────────────────────────────────────── */
   /* Prevent iOS font size auto-adjust */
   * { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
@@ -1062,12 +1213,187 @@ function loadTabFor(round, key) {
 }
 
 // ─── TAB LOGIC ────────────────────────────────────────────────────────────────
+// ─── LIVE DATA ────────────────────────────────────────────────────────────────
+let liveTimer = null;
+let liveSessionKey = null;
+
+const TYRE_SHORT = { SOFT:'S', MEDIUM:'M', HARD:'H', INTERMEDIATE:'I', WET:'W' };
+
+async function getLiveSessionKey(round) {
+  if (liveSessionKey) return liveSessionKey;
+  try {
+    const res = await fetch(
+      `https://api.openf1.org/v1/sessions?year=2026&session_name=Race`,
+      { signal: AbortSignal.timeout(6000) });
+    if (!res.ok) return null;
+    const sessions = await res.json();
+    if (!Array.isArray(sessions) || !sessions.length) return null;
+    sessions.sort((a,b) => a.session_key - b.session_key);
+    const sess = sessions[round - 1];
+    liveSessionKey = sess?.session_key || null;
+    return liveSessionKey;
+  } catch(e) { return null; }
+}
+
+async function fetchLiveData(round) {
+  const sk = await getLiveSessionKey(round);
+  if (!sk) return null;
+  try {
+    const [posRes, drvRes, tyrRes, pitRes, lapRes] = await Promise.all([
+      fetch(`https://api.openf1.org/v1/position?session_key=${sk}`,          { signal: AbortSignal.timeout(5000) }),
+      fetch(`https://api.openf1.org/v1/drivers?session_key=${sk}`,           { signal: AbortSignal.timeout(5000) }),
+      fetch(`https://api.openf1.org/v1/stints?session_key=${sk}`,            { signal: AbortSignal.timeout(5000) }),
+      fetch(`https://api.openf1.org/v1/pit?session_key=${sk}`,               { signal: AbortSignal.timeout(5000) }),
+      fetch(`https://api.openf1.org/v1/laps?session_key=${sk}`,              { signal: AbortSignal.timeout(8000) }),
+    ]);
+
+    const [positions, drivers, stints, pits, laps] = await Promise.all([
+      posRes.ok ? posRes.json() : [],
+      drvRes.ok ? drvRes.json() : [],
+      tyrRes.ok ? tyrRes.json() : [],
+      pitRes.ok ? pitRes.json() : [],
+      lapRes.ok ? lapRes.json() : [],
+    ]);
+
+    // Latest position per driver
+    const posMap = {};
+    for (const p of positions) {
+      if (!posMap[p.driver_number] || p.date > posMap[p.driver_number].date)
+        posMap[p.driver_number] = p;
+    }
+
+    // Driver info
+    const drvMap = {};
+    for (const d of drivers) drvMap[d.driver_number] = d;
+
+    // Latest stint per driver (current tyre)
+    const stintMap = {};
+    for (const s of stints) {
+      if (!stintMap[s.driver_number] || s.stint_number > stintMap[s.driver_number].stint_number)
+        stintMap[s.driver_number] = s;
+    }
+
+    // Pit count per driver
+    const pitCount = {};
+    for (const p of pits) pitCount[p.driver_number] = (pitCount[p.driver_number]||0) + 1;
+
+    // Best and last lap per driver
+    const bestLap = {}, lastLap = {};
+    for (const l of laps) {
+      if (!l.lap_duration) continue;
+      const dn = l.driver_number;
+      if (!bestLap[dn] || l.lap_duration < bestLap[dn]) bestLap[dn] = l.lap_duration;
+      if (!lastLap[dn] || l.lap_number > (lastLap[dn].lap_number||0)) lastLap[dn] = l;
+    }
+
+    // Current lap (max lap_number seen)
+    const allLapNums = laps.map(l=>l.lap_number).filter(Boolean);
+    const currentLap = allLapNums.length ? Math.max(...allLapNums) : '?';
+
+    const rows = Object.values(posMap).sort((a,b) => (a.position||99)-(b.position||99));
+    return { rows, drvMap, stintMap, pitCount, bestLap, lastLap, currentLap, sk };
+  } catch(e) { return null; }
+}
+
+function renderLive(data, race) {
+  if (!data) return `<div class="error-msg">⚠ Kunde inte hämta live-data<br>
+    <span style="font-size:11px;color:#555;display:block;margin-top:6px">OpenF1 kontaktades – försök igen</span></div>`;
+
+  const { rows, drvMap, stintMap, pitCount, bestLap, lastLap, currentLap } = data;
+  if (!rows.length) return `<div class="error-msg">Ingen live-data ännu<br>
+    <span style="font-size:11px;color:#555;display:block;margin-top:6px">Uppdateras när racet startar</span></div>`;
+
+  // Find global fastest lap
+  const allBest = Object.values(bestLap).filter(Boolean);
+  const fastestTime = allBest.length ? Math.min(...allBest) : null;
+
+  // Find leader's lap count for gap calculation
+  const leader = rows[0];
+
+  const driverRows = rows.map((r, i) => {
+    const dn = r.driver_number;
+    const d  = drvMap[dn] || {};
+    const col = d.team_colour ? `#${d.team_colour}` : teamColor(d.team_name||'');
+    const pos = r.position || i+1;
+    const pc  = pos===1?'pos-1':pos===2?'pos-2':pos===3?'pos-3':'pos-other';
+
+    // Tyre
+    const stint = stintMap[dn];
+    const tyreCompound = stint?.compound || 'UNKNOWN';
+    const tyreAge = stint ? (currentLap !== '?' ? (currentLap - (stint.lap_start||1) + 1) : '?') : '?';
+    const tyreClass = `tyre-${tyreCompound.toUpperCase()}`;
+    const tyreLabel = TYRE_SHORT[tyreCompound] || tyreCompound[0] || '?';
+
+    // Pits
+    const stops = pitCount[dn] || 0;
+
+    // Gap
+    let gap = '—';
+    if (i === 0) gap = 'Ledare';
+    else if (r.date && leader?.date) gap = '+' + ((new Date(r.date) - new Date(leader.date))/1000).toFixed(1) + 's';
+
+    // Last lap time
+    const ll = lastLap[dn];
+    const llTime = ll?.lap_duration ? fmtSecs(ll.lap_duration) : '—';
+    const isFastest = fastestTime && bestLap[dn] === fastestTime;
+
+    return `<div class="live-row">
+      <div class="live-pos"><span class="${pc}">${pos}</span></div>
+      <div class="live-driver-block">
+        <div class="live-name-row">
+          <div class="live-bar" style="background:${col}"></div>
+          <span class="live-abbr">${d.name_acronym||''}</span>
+          <span class="live-name">${d.full_name || '#'+dn}</span>
+        </div>
+        <div class="live-meta-row">
+          <span class="tyre-chip ${tyreClass}">${tyreLabel} +${tyreAge}v</span>
+          ${stops > 0 ? `<span class="live-pits">🛞 ${stops} stopp</span>` : '<span class="live-pits">Ej pitat</span>'}
+        </div>
+      </div>
+      <div class="live-right">
+        <div class="live-gap-val">${gap}</div>
+        <div class="live-laptime${isFastest?' fastest':''}">${llTime}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  return `<div class="live-wrap">
+    <div class="live-header">
+      <div class="live-indicator"><div class="live-dot"></div>LIVE</div>
+      <div class="live-lap">Varv <strong>${currentLap}</strong></div>
+    </div>
+    ${driverRows}
+    <div class="live-refresh-note">Uppdateras var 5:e sekund · OpenF1</div>
+  </div>`;
+}
+
+async function startLiveTab(card, race) {
+  // Stop any existing timer
+  if (liveTimer) { clearInterval(liveTimer); liveTimer = null; }
+
+  const content = card.querySelector('.tab-content');
+  content.innerHTML = `<div class="loading"><div class="spinner"></div>Hämtar live-data...</div>`;
+
+  const update = async () => {
+    // Only update if tab is still active and card is open
+    if (!card.classList.contains('open')) return;
+    const activeTab = card.querySelector('.tab-btn.active')?.dataset.tab;
+    if (activeTab !== 'live') { clearInterval(liveTimer); liveTimer = null; return; }
+    const data = await fetchLiveData(race.round);
+    content.innerHTML = renderLive(data, race);
+  };
+
+  await update();
+  liveTimer = setInterval(update, 5000);
+}
+
 async function loadTab(card, race, tabKey) {
   card.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabKey));
   const content = card.querySelector('.tab-content');
   const now = new Date();
 
   if (tabKey === 'schedule') { content.innerHTML = renderSchedule(race); return; }
+  if (tabKey === 'live') { await startLiveTab(card, race); return; }
 
   const sessions = getSessions(race);
   const sess = sessions.find(s => s.key === tabKey);
@@ -1118,6 +1444,9 @@ function buildCard(race) {
   const sessions = getSessions(race);
   const tabsToShow = [{ key:'schedule', label:'Tider' }];
 
+  // Add LIVE tab first if it's race weekend and currently live
+  if (live) tabsToShow.push({ key:'live', label:'🔴 LIVE' });
+
   if (past || live) {
     if (race.sprint) {
       [['fp1','FP1'],['sq','Sprint Kval'],['sprint','Sprint'],['quali','Kval'],['race','Race']].forEach(([k,l]) => {
@@ -1130,7 +1459,7 @@ function buildCard(race) {
     }
   }
 
-  const defaultTab = tabsToShow[tabsToShow.length - 1].key;
+  const defaultTab = live ? 'live' : tabsToShow[tabsToShow.length - 1].key;
   const card = document.createElement('div');
   card.className = `race-card${live?' live':''}${!past&&!live?' upcoming':''}`;
   card.dataset.round = race.round;
@@ -1157,6 +1486,7 @@ function buildCard(race) {
     const wasOpen = card.classList.contains('open');
     card.classList.toggle('open', !wasOpen);
     if (!wasOpen) loadTab(card, race, card.querySelector('.tab-btn.active')?.dataset.tab || defaultTab);
+    else if (liveTimer) { clearInterval(liveTimer); liveTimer = null; }
   });
   card.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', e => { e.stopPropagation(); loadTab(card, race, btn.dataset.tab); });
