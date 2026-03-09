@@ -682,6 +682,108 @@ header {
 .more-menu-label { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.2; }
 .more-menu-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
 .more-menu-arrow { font-size: 20px; color: var(--muted); flex-shrink: 0; line-height: 1; }
+
+/* ── THEME SHEET ────────────────────────────────────────────────────────────── */
+.theme-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:600;
+  opacity:0; pointer-events:none; transition:opacity 0.25s;
+}
+.theme-overlay.open { opacity:1; pointer-events:all; }
+.theme-sheet {
+  position:fixed; bottom:0; left:0; right:0; z-index:601;
+  background:var(--surface); border-top:1px solid var(--border2);
+  border-radius:20px 20px 0 0;
+  padding:0 16px calc(24px + var(--safe-bottom));
+  transform:translateY(100%);
+  transition:transform 0.32s cubic-bezier(0.32,0.72,0,1);
+  max-height:80vh; overflow-y:auto;
+}
+.theme-sheet.open { transform:translateY(0); }
+.theme-handle {
+  width:36px; height:4px; background:var(--border2);
+  border-radius:2px; margin:12px auto 16px;
+}
+.theme-title {
+  font-family:'Bebas Neue',sans-serif; font-size:22px;
+  letter-spacing:2px; padding-bottom:12px;
+  border-bottom:1px solid var(--border); margin-bottom:12px;
+}
+.theme-grid {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:8px;
+}
+.theme-swatch {
+  display:flex; align-items:center; gap:8px;
+  background:var(--surface2); border:1.5px solid var(--border);
+  border-radius:var(--r-md); padding:10px 12px; cursor:pointer;
+  transition:border-color 0.15s;
+}
+.theme-swatch.active { border-color:var(--accent); }
+.theme-swatch:active { opacity:0.75; }
+.theme-swatch-dot {
+  width:14px; height:14px; border-radius:50%; flex-shrink:0;
+}
+.theme-swatch-label { font-size:12px; font-weight:600; color:var(--text2); }
+
+/* ── STATS PAGE ─────────────────────────────────────────────────────────── */
+.stats-driver-grid {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; margin-bottom: 18px;
+}
+.stats-driver-chip {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  background: var(--surface2); border: 1.5px solid var(--border);
+  border-radius: var(--r-md); padding: 10px 6px 8px;
+  cursor: pointer; transition: all 0.15s; text-align: center;
+}
+.stats-driver-chip.selected {
+  border-color: var(--chip-col, var(--accent));
+  background: color-mix(in srgb, var(--chip-col, var(--accent)) 10%, var(--surface2));
+}
+.stats-driver-chip:active { opacity: 0.7; }
+.stats-chip-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.stats-chip-abbr { font-weight: 700; font-size: 13px; line-height: 1; }
+.stats-chip-team { font-size: 9px; color: var(--muted); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+
+.stats-driver-header {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 14px 16px; margin-bottom: 12px;
+}
+.stats-driver-color-bar { width: 4px; height: 44px; border-radius: 2px; flex-shrink: 0; }
+.stats-driver-name { font-family: "Bebas Neue", sans-serif; font-size: 26px; letter-spacing: 1px; line-height: 1; }
+.stats-driver-team { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.stats-driver-pos { font-family: "Bebas Neue", sans-serif; font-size: 36px; flex-shrink: 0; }
+.stats-driver-pos-label { font-size: 9px; color: var(--muted); text-align: center; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.stats-kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; margin-bottom: 16px; }
+.stats-kpi {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 10px 8px; text-align: center;
+}
+.stats-kpi-val { font-family: "Bebas Neue", sans-serif; font-size: 22px; line-height: 1; color: var(--text); }
+.stats-kpi-label { font-size: 9px; color: var(--muted); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.stats-section-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--muted); margin-bottom: 8px;
+}
+.stats-race-row {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 9px 12px; margin-bottom: 5px;
+}
+.stats-race-round { font-family: "Bebas Neue", sans-serif; font-size: 14px; color: var(--muted); width: 22px; flex-shrink: 0; text-align: center; }
+.stats-race-flag { font-size: 16px; flex-shrink: 0; }
+.stats-race-name { flex: 1; font-size: 12px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.stats-race-grid { font-size: 11px; color: var(--muted); flex-shrink: 0; min-width: 28px; text-align: center; }
+.stats-race-pos { font-family: "Bebas Neue", sans-serif; font-size: 18px; flex-shrink: 0; min-width: 28px; text-align: center; }
+.stats-race-pts { font-size: 11px; font-weight: 700; flex-shrink: 0; min-width: 28px; text-align: right; }
+.stats-pos-1 { color: var(--gold); }
+.stats-pos-2 { color: var(--silver); }
+.stats-pos-3 { color: var(--bronze); }
+.stats-dnf { color: #f87171; }
+.stats-form-bar { display: flex; gap: 3px; margin-bottom: 14px; }
+.stats-form-dot { flex: 1; height: 6px; border-radius: 3px; background: var(--border); }
+.stats-empty { text-align: center; color: var(--muted); font-size: 13px; padding: 40px 16px; }
 </style>
 </head>
 <body>
@@ -2801,6 +2903,7 @@ async function newsInit(force=false) {
   if (newsLoaded && !force) return;
   newsLoaded = true;
   const el = document.getElementById('news-list');
+  if (!el) return;
   el.innerHTML = '<div class="loading"><div class="spinner"></div>Hämtar nyheter...</div>';
 
   // Use rss2json to convert BBC Sport F1 RSS → JSON (CORS-friendly)
@@ -2859,6 +2962,7 @@ async function newsInit(force=false) {
         }).join('');
       el.innerHTML = html2;
     } catch(e2) {
+      newsLoaded = false;
       el.innerHTML = `<div class="news-empty">📡 Kunde inte hämta nyheter.<br><small>Kontrollera din anslutning</small><br><br><button class="news-refresh" onclick="newsInit(true)">🔄 Försök igen</button></div>`;
     }
   }
