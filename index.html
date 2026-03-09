@@ -784,6 +784,181 @@ header {
 .stats-form-bar { display: flex; gap: 3px; margin-bottom: 14px; }
 .stats-form-dot { flex: 1; height: 6px; border-radius: 3px; background: var(--border); }
 .stats-empty { text-align: center; color: var(--muted); font-size: 13px; padding: 40px 16px; }
+
+/* ── TELEMETRI PAGE ──────────────────────────────────────────────────────── */
+.tm-section { margin-bottom: 16px; }
+.tm-label {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--muted); margin-bottom: 6px;
+}
+.tm-select {
+  width: 100%; background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--r-sm); color: var(--text); padding: 11px 14px;
+  font-family: "DM Sans", sans-serif; font-size: 14px;
+  appearance: none; -webkit-appearance: none; outline: none;
+}
+.tm-select:focus { border-color: var(--accent); }
+.tm-driver-grid {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 6px;
+}
+.tm-driver-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  background: var(--surface2); border: 1.5px solid var(--border);
+  border-radius: var(--r-sm); padding: 8px 4px; cursor: pointer;
+  transition: all 0.15s; text-align: center;
+}
+.tm-driver-btn.selected {
+  border-color: var(--chip-col, var(--accent));
+  background: color-mix(in srgb, var(--chip-col, var(--accent)) 12%, var(--surface2));
+}
+.tm-driver-btn:active { opacity: 0.7; }
+.tm-driver-abbr { font-weight: 700; font-size: 12px; line-height: 1; }
+.tm-driver-name { font-size: 9px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+
+.tm-metric-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+.tm-metric-tab {
+  flex: 1; background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--r-sm); color: var(--muted);
+  font-family: "DM Sans", sans-serif; font-size: 12px; font-weight: 600;
+  padding: 9px 4px; cursor: pointer; transition: all 0.15s;
+}
+.tm-metric-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+.tm-chart-wrap {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 14px; margin-bottom: 12px;
+  position: relative;
+}
+.tm-chart-wrap canvas { width: 100% !important; }
+
+.tm-status-msg {
+  text-align: center; color: var(--muted); font-size: 13px; padding: 32px 16px;
+}
+
+.tm-stints-wrap { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
+.tm-stint-row {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 10px 12px;
+}
+.tm-stint-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.tm-stint-abbr { font-family: "Bebas Neue", sans-serif; font-size: 16px; }
+.tm-stint-bars { display: flex; flex-direction: column; gap: 4px; }
+.tm-stint-bar-row { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--muted); }
+.tm-stint-bar-track { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.tm-stint-bar-fill { height: 100%; border-radius: 4px; }
+.tm-stint-label { width: 24px; text-align: center; font-weight: 700; }
+.tm-stint-laps { min-width: 40px; text-align: right; }
+
+.tm-stats-table-wrap { overflow-x: auto; margin-bottom: 12px; }
+.tm-stats-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.tm-stats-table th { color: var(--muted); font-weight: 600; padding: 6px 8px; text-align: left; border-bottom: 1px solid var(--border); font-size: 10px; text-transform: uppercase; }
+.tm-stats-table td { padding: 8px 8px; border-bottom: 1px solid var(--border); color: var(--text2); }
+.tm-stats-table tr:last-child td { border-bottom: none; }
+.tm-stats-table .tm-td-abbr { font-family: "Bebas Neue", sans-serif; font-size: 15px; }
+.tm-stats-table .tm-td-best { color: var(--purple, #c084fc); font-weight: 700; }
+
+/* ── STATS MODE TABS ─────────────────────────────────────────────────────── */
+.stats-mode-tabs {
+  display: flex; gap: 6px; background: var(--surface2); border-radius: var(--r-sm);
+  padding: 4px; margin-bottom: 16px; border: 1px solid var(--border);
+}
+.stats-mode-tab {
+  flex: 1; background: none; border: none; color: var(--muted);
+  font-family: "DM Sans", sans-serif; font-size: 13px; font-weight: 600;
+  padding: 9px; border-radius: 6px; cursor: pointer; transition: all 0.15s;
+}
+.stats-mode-tab.active { background: var(--accent); color: #fff; }
+
+/* ── GAP TO LEADER ───────────────────────────────────────────────────────── */
+.gap-sub { font-size: 11px; color: var(--muted); margin-bottom: 14px; }
+.gap-load-btn {
+  display: block; width: 100%; margin-top: 12px;
+  background: var(--accent); border: none; border-radius: var(--r-sm);
+  color: #fff; font-family: "DM Sans", sans-serif; font-size: 14px;
+  font-weight: 700; padding: 13px; cursor: pointer; transition: opacity 0.15s;
+}
+.gap-load-btn:active { opacity: 0.8; }
+.gap-load-btn.hidden { display: none; }
+
+.gap-team-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-md); overflow: hidden; margin-bottom: 10px;
+}
+.gap-team-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; border-bottom: 1px solid var(--border);
+}
+.gap-team-rank { font-family: "Bebas Neue", sans-serif; font-size: 28px; color: var(--muted); width: 28px; flex-shrink: 0; }
+.gap-team-rank.r1 { color: var(--gold); }
+.gap-team-rank.r2 { color: var(--silver); }
+.gap-team-rank.r3 { color: var(--bronze); }
+.gap-team-color { width: 4px; height: 36px; border-radius: 2px; flex-shrink: 0; }
+.gap-team-name { font-family: "Bebas Neue", sans-serif; font-size: 19px; letter-spacing: 0.5px; flex: 1; }
+.gap-team-avg { text-align: right; }
+.gap-team-avg-val { font-family: "Bebas Neue", sans-serif; font-size: 22px; color: var(--accent); line-height: 1; }
+.gap-team-avg-label { font-size: 9px; color: var(--muted); text-transform: uppercase; margin-top: 2px; }
+
+.gap-driver-rows { padding: 8px 14px 10px; display: flex; flex-direction: column; gap: 8px; }
+.gap-driver-row { display: grid; grid-template-columns: 28px 1fr auto; align-items: center; gap: 8px; }
+.gap-driver-abbr { font-family: "Bebas Neue", sans-serif; font-size: 15px; }
+.gap-bar-wrap { position: relative; }
+.gap-bar-track { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.gap-bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+.gap-bar-laps { font-size: 9px; color: var(--muted); margin-top: 2px; }
+.gap-val { font-family: "Bebas Neue", sans-serif; font-size: 16px; color: var(--text2); min-width: 54px; text-align: right; }
+
+/* ── LIGA / LEADERBOARD ──────────────────────────────────────────────────── */
+.liga-me-card {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--surface2); border: 1.5px solid var(--accent);
+  border-radius: var(--r-md); padding: 14px 16px; margin-bottom: 14px;
+}
+.liga-me-avatar { font-size: 32px; flex-shrink: 0; }
+.liga-me-info { flex: 1; min-width: 0; }
+.liga-me-name { font-family: "Bebas Neue", sans-serif; font-size: 22px; line-height: 1; }
+.liga-me-team { font-size: 11px; margin-top: 3px; }
+.liga-me-pts { font-family: "Bebas Neue", sans-serif; font-size: 36px; line-height: 1; color: var(--accent); text-align: right; flex-shrink: 0; }
+.liga-pts-label { font-size: 13px; color: var(--muted); }
+.liga-hist-list { display: flex; flex-direction: column; gap: 5px; }
+.liga-hist-row {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 9px 12px;
+}
+.liga-hist-flag { font-size: 18px; flex-shrink: 0; }
+.liga-hist-name { flex: 1; font-size: 13px; font-weight: 600; color: var(--text2); }
+.liga-hist-pts { font-family: "Bebas Neue", sans-serif; font-size: 18px; color: var(--accent); }
+.liga-empty { text-align: center; padding: 32px 16px; color: var(--muted); font-size: 13px; }
+.liga-empty-icon { font-size: 36px; margin-bottom: 8px; }
+
+
+.liga-list { display: flex; flex-direction: column; gap: 5px; }
+.liga-row {
+  display: grid; grid-template-columns: 28px 32px 1fr auto;
+  align-items: center; gap: 8px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 10px 12px;
+}
+.liga-row-me { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--surface2)); }
+.liga-rank { font-family: "Bebas Neue", sans-serif; font-size: 20px; color: var(--muted); text-align: center; }
+.liga-rank.gold   { color: var(--gold); }
+.liga-rank.silver { color: var(--silver); }
+.liga-rank.bronze { color: var(--bronze); }
+.liga-avatar { font-size: 22px; text-align: center; }
+.liga-info { min-width: 0; }
+.liga-name { font-size: 13px; font-weight: 700; color: var(--text); }
+.liga-meta { font-size: 10px; color: var(--muted); margin-top: 2px; }
+.liga-you-badge {
+  font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px;
+  background: var(--accent); color: #fff; vertical-align: middle; margin-left: 4px;
+}
+.liga-pts { font-family: "Bebas Neue", sans-serif; font-size: 24px; color: var(--text); text-align: right; }
+.liga-pts-label { font-size: 11px; color: var(--muted); }
+
+.liga-empty { text-align: center; padding: 32px 16px; }
+.liga-empty-icon { font-size: 40px; margin-bottom: 10px; }
+.liga-empty-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.liga-empty-sub { font-size: 12px; color: var(--muted); line-height: 1.5; }
 </style>
 </head>
 <body>
@@ -821,7 +996,7 @@ header {
     <div class="fx-hero">
       <div class="fx-hero-icon">🎮</div>
       <div class="fx-hero-title">F1 Fantasy</div>
-      <div class="fx-hero-sub">Tippa topp 5 – samla poäng varje race</div>
+      <div class="fx-hero-sub">Tippa topp 5 – tävla mot kompisar</div>
     </div>
     <div class="fx-setup-card">
       <div class="fx-field-label">Ditt namn</div>
@@ -840,6 +1015,7 @@ header {
       </select>
       <button class="fx-btn-primary" style="margin-top:18px" onclick="fxCreateProfile()">Skapa profil &amp; börja tippa →</button>
     </div>
+
     <button class="fx-info-btn" onclick="fxShowInfo()">ℹ️ Hur fungerar det?</button>
   </div>
 
@@ -888,10 +1064,12 @@ header {
     <div class="fx-tabs">
       <button class="fx-tab active" id="fxtab-tips" onclick="fxTab('tips')">🎯 Mitt tips</button>
       <button class="fx-tab" id="fxtab-history" onclick="fxTab('history')">📋 Historik</button>
+      <button class="fx-tab" id="fxtab-liga" onclick="fxTab('liga')">🏆 Liga</button>
     </div>
 
     <div id="fx-panel-tips"></div>
     <div id="fx-panel-history" style="display:none"></div>
+    <div id="fx-panel-liga" style="display:none"></div>
   </div>
 
 </div>
@@ -1052,16 +1230,37 @@ header {
 <!-- STATS PAGE -->
 <div class="container" id="page-stats" style="display:none">
   <div class="page-title">📊 Statistik</div>
-  <div class="page-subtitle">Välj en förare för säsongsöversikt 2026</div>
-  <div class="stats-driver-grid" id="stats-driver-grid"></div>
-  <div id="stats-content" style="display:none">
-    <div class="stats-driver-header" id="stats-driver-header"></div>
-    <div class="stats-kpi-row" id="stats-kpi-row"></div>
-    <div class="stats-section-label">Lopp för lopp</div>
-    <div id="stats-race-list"></div>
+
+  <!-- Mode tabs -->
+  <div class="stats-mode-tabs">
+    <button class="stats-mode-tab active" id="stab-driver" onclick="statsMode('driver')">👤 Förare</button>
+    <button class="stats-mode-tab" id="stab-team" onclick="statsMode('team')">🏎️ Team</button>
   </div>
-  <div id="stats-loading" style="display:none" class="loading"><div class="spinner"></div>Hämtar statistik...</div>
-  <div id="stats-empty" class="stats-empty">Välj en förare ovan</div>
+
+  <!-- DRIVER VIEW -->
+  <div id="stats-view-driver">
+    <div class="stats-driver-grid" id="stats-driver-grid"></div>
+    <div id="stats-content" style="display:none">
+      <div class="stats-driver-header" id="stats-driver-header"></div>
+      <div class="stats-kpi-row" id="stats-kpi-row"></div>
+      <div class="stats-section-label">Lopp för lopp</div>
+      <div id="stats-race-list"></div>
+    </div>
+    <div id="stats-loading" style="display:none" class="loading"><div class="spinner"></div>Hämtar statistik...</div>
+    <div id="stats-empty" class="stats-empty">Välj en förare ovan</div>
+  </div>
+
+  <!-- TEAM VIEW -->
+  <div id="stats-view-team" style="display:none">
+    <div class="stats-section-label" style="margin-bottom:10px">Gap to leader — snitt per team (exkl. DNF)</div>
+    <div id="gap-loading" class="loading" style="display:none"><div class="spinner"></div>Hämtar lopp-data...</div>
+    <div id="gap-empty" class="stats-empty">Tryck för att ladda data</div>
+    <div id="gap-content" style="display:none">
+      <div class="gap-sub" id="gap-sub"></div>
+      <div id="gap-list"></div>
+    </div>
+    <button class="gap-load-btn" id="gap-load-btn" onclick="gapLoad()">Ladda gap-data för 2026 →</button>
+  </div>
 </div>
 
 
@@ -1250,7 +1449,7 @@ function showPage(page) {
   if (page==='standings') showStandings(currentStandingsTab);
   if (page==='fantasy')   fantasyInit();
   if (page==='more')      morInit();
-  if (page==='stats')     statsInit();
+  if (page==='stats')     { statsInit(); }
   if (page==='h2h')       h2hInit();
   if (page==='circuits')  circInit();
   if (page==='news')      newsInit();
@@ -2047,14 +2246,58 @@ function fxSaveProfile() {
 }
 
 // ── Tabs ───────────────────────────────────────────────────────────────────
+function fxRenderLiga() {
+  const panel = document.getElementById('fx-panel-liga');
+  if (!panel) return;
+  const profile = fxLoad();
+  const picks   = fxLoadPicks();
+  if (!profile) {
+    panel.innerHTML = '<div class="liga-empty"><div class="liga-empty-icon">👤</div><div>Skapa en profil för att se din liga</div></div>';
+    return;
+  }
+  let total = 0;
+  const scored = Object.entries(picks).filter(([,p]) => p.scored);
+  scored.forEach(([,p]) => { total += (p.pts || 0); });
+
+  const col = teamColor(profile.team);
+  const emoji = fxDriverEmoji(profile.driver);
+
+  let histRows = scored
+    .sort((a,b) => parseInt(b[0])-parseInt(a[0]))
+    .map(([rk, entry]) => {
+      const race = RACES_2026.find(r => String(r.round) === rk);
+      if (!race) return '';
+      return '<div class="liga-hist-row">'
+        + '<span class="liga-hist-flag">' + race.flag + '</span>'
+        + '<span class="liga-hist-name">' + race.name + '</span>'
+        + '<span class="liga-hist-pts">' + entry.pts + ' p</span>'
+        + '</div>';
+    }).join('');
+
+  panel.innerHTML =
+    '<div class="liga-me-card">'
+    + '<div class="liga-me-avatar">' + emoji + '</div>'
+    + '<div class="liga-me-info">'
+    +   '<div class="liga-me-name">' + profile.name + '</div>'
+    +   '<div class="liga-me-team" style="color:' + col + '">' + profile.team + ' · ' + profile.driver + '</div>'
+    + '</div>'
+    + '<div class="liga-me-pts">' + total + '<span class="liga-pts-label"> p</span></div>'
+    + '</div>'
+    + (histRows
+        ? '<div class="stats-section-label" style="margin:12px 0 6px">Poäng per race</div><div class="liga-hist-list">' + histRows + '</div>'
+        : '<div class="liga-empty" style="padding:20px 0"><div class="liga-empty-icon">🏁</div><div>Inga beräknade race ännu</div></div>');
+}
+
 function fxTab(tab) {
-  ['tips','history'].forEach(t => {
-    document.getElementById('fxtab-'+t).classList.toggle('active', t===tab);
+  ['tips','history','liga'].forEach(t => {
+    document.getElementById('fxtab-'+t)?.classList.toggle('active', t===tab);
   });
   document.getElementById('fx-panel-tips').style.display     = tab==='tips'    ? '' : 'none';
   document.getElementById('fx-panel-history').style.display  = tab==='history' ? '' : 'none';
+  document.getElementById('fx-panel-liga').style.display     = tab==='liga'    ? '' : 'none';
   if (tab==='tips')    fxRenderTips();
   if (tab==='history') fxRenderHistory();
+  if (tab==='liga')    fxRenderLiga();
 }
 
 // ── Tips panel ─────────────────────────────────────────────────────────────
@@ -2564,6 +2807,208 @@ const DRIVER_IDS = {
 
 let statsSelectedDriver = null;
 const statsCache = {};
+
+// ── STATS MODE TABS ────────────────────────────────────────────────────────
+function statsMode(mode) {
+  document.getElementById('stab-driver').classList.toggle('active', mode === 'driver');
+  document.getElementById('stab-team').classList.toggle('active', mode === 'team');
+  document.getElementById('stats-view-driver').style.display = mode === 'driver' ? '' : 'none';
+  document.getElementById('stats-view-team').style.display   = mode === 'team'   ? '' : 'none';
+  if (mode === 'team' && !gapLoaded && !gapLoading) {
+    // Show load button, already visible by default
+  }
+}
+
+// ── GAP TO LEADER ──────────────────────────────────────────────────────────
+let gapLoaded = false;
+let gapLoading = false;
+let gapData = null; // { teams: { teamName: { d1: { gaps:[], avg }, d2: { gaps:[], avg }, teamAvg } } }
+
+// Map Jolpica constructor names → our team names
+const CONSTRUCTOR_TEAM_MAP = {
+  'Red Bull':       'Red Bull',
+  'Ferrari':        'Ferrari',
+  'McLaren':        'McLaren',
+  'Mercedes':       'Mercedes',
+  'Aston Martin':   'Aston Martin',
+  'Alpine F1 Team': 'Alpine',
+  'Alpine':         'Alpine',
+  'Williams':       'Williams',
+  'RB F1 Team':     'Racing Bulls',
+  'Racing Bulls':   'Racing Bulls',
+  'Haas F1 Team':   'Haas',
+  'Haas':           'Haas',
+  'Audi':           'Audi',
+  'Sauber':         'Audi',
+  'Kick Sauber':    'Audi',
+  'Cadillac':       'Cadillac',
+  'TWO11':          'Cadillac',
+};
+
+function parseGapToSeconds(timeStr) {
+  // "+1:23.456" → 83.456, "+5.123" → 5.123, null if DNF/lapped
+  if (!timeStr) return null;
+  const s = timeStr.replace('+','').trim();
+  if (s.includes(':')) {
+    const [m, sec] = s.split(':');
+    return parseInt(m) * 60 + parseFloat(sec);
+  }
+  const n = parseFloat(s);
+  return isNaN(n) ? null : n;
+}
+
+async function gapLoad() {
+  if (gapLoading || gapLoaded) return;
+  gapLoading = true;
+
+  const btn = document.getElementById('gap-load-btn');
+  const loadEl = document.getElementById('gap-loading');
+  const emptyEl = document.getElementById('gap-empty');
+  const contentEl = document.getElementById('gap-content');
+
+  btn.classList.add('hidden');
+  emptyEl.style.display = 'none';
+  loadEl.style.display = '';
+
+  // Find all past races
+  const pastRaces = RACES_2026.filter(r => isPast(r));
+  if (!pastRaces.length) {
+    loadEl.style.display = 'none';
+    emptyEl.style.display = '';
+    emptyEl.textContent = 'Inga avslutade lopp ännu — kom tillbaka efter Australien!';
+    gapLoading = false;
+    return;
+  }
+
+  // Fetch all race results in parallel
+  const allResults = {}; // round → Results array
+  try {
+    await Promise.all(pastRaces.map(async race => {
+      try {
+        const r = await fetch(
+          'https://api.jolpi.ca/ergast/f1/2026/' + race.round + '/results/?limit=25',
+          { signal: AbortSignal.timeout(12000) }
+        );
+        if (!r.ok) return;
+        const j = await r.json();
+        const results = j?.MRData?.RaceTable?.Races?.[0]?.Results || [];
+        allResults[race.round] = results;
+      } catch(e) { /* skip */ }
+    }));
+  } catch(e) {}
+
+  // Build per-driver gap stats
+  // Structure: driverData[driverCode] = { name, team, gaps: [], raceCount }
+  const driverData = {};
+
+  Object.entries(allResults).forEach(([round, results]) => {
+    results.forEach(res => {
+      const code = res.Driver?.code || '';
+      const name = res.Driver?.givenName?.charAt(0) + '. ' + res.Driver?.familyName;
+      const teamRaw = res.Constructor?.name || '';
+      const team = CONSTRUCTOR_TEAM_MAP[teamRaw] || teamRaw;
+      const pos = parseInt(res.position);
+      const status = res.status || '';
+
+      // Skip DNF (not Finished and not "+N Laps")
+      const isDnf = status !== 'Finished' && !status.match(/^\+\d+ Lap/);
+      if (isDnf) return;
+
+      // P1 = 0s gap
+      let gapSec = 0;
+      if (pos > 1) {
+        const timeStr = res.Time?.time || null;
+        gapSec = parseGapToSeconds(timeStr);
+        if (gapSec === null) return; // lapped/no time — skip
+      }
+
+      if (!driverData[code]) driverData[code] = { name, team, gaps: [], raceCount: 0 };
+      driverData[code].gaps.push(gapSec);
+      driverData[code].raceCount++;
+    });
+  });
+
+  // Group by team
+  const teamData = {}; // teamName → { drivers: { code: { name, avg, races } }, teamAvg }
+  Object.entries(driverData).forEach(([code, d]) => {
+    if (!d.gaps.length) return;
+    const avg = d.gaps.reduce((a,b) => a+b, 0) / d.gaps.length;
+    if (!teamData[d.team]) teamData[d.team] = { drivers: {}, teamAvg: 0 };
+    teamData[d.team].drivers[code] = { name: d.name, avg, races: d.raceCount, gaps: d.gaps };
+  });
+
+  // Team avg = average of driver averages
+  Object.entries(teamData).forEach(([team, td]) => {
+    const avgs = Object.values(td.drivers).map(d => d.avg);
+    td.teamAvg = avgs.reduce((a,b) => a+b, 0) / avgs.length;
+  });
+
+  // Sort teams by teamAvg ascending
+  const sortedTeams = Object.entries(teamData).sort((a,b) => a[1].teamAvg - b[1].teamAvg);
+
+  if (!sortedTeams.length) {
+    loadEl.style.display = 'none';
+    emptyEl.style.display = '';
+    emptyEl.textContent = 'Ingen gap-data tillgänglig';
+    gapLoading = false;
+    return;
+  }
+
+  // Max avg for bar scaling
+  const maxAvg = Math.max(...sortedTeams.map(([,t]) => t.teamAvg));
+  const raceCount = pastRaces.length;
+  const racesWithData = Object.keys(allResults).length;
+
+  // Render
+  document.getElementById('gap-sub').innerHTML =
+    'Baserat på ' + racesWithData + ' av ' + raceCount + ' lopp · ' +
+    'Snitt gap till ledaren i sekunder · DNF exkluderat';
+
+  let html = '';
+  sortedTeams.forEach(([teamName, td], idx) => {
+    const rank = idx + 1;
+    const col = teamColor(teamName);
+    const rankClass = rank === 1 ? 'r1' : rank === 2 ? 'r2' : rank === 3 ? 'r3' : '';
+    const avgFormatted = td.teamAvg < 0.001 ? '0.000s' : '+' + td.teamAvg.toFixed(3) + 's';
+
+    // Sort drivers within team
+    const sortedDrivers = Object.entries(td.drivers).sort((a,b) => a[1].avg - b[1].avg);
+
+    const driverRows = sortedDrivers.map(([code, d]) => {
+      const dAvg = d.avg < 0.001 ? '0.000s' : '+' + d.avg.toFixed(3) + 's';
+      const barPct = maxAvg > 0 ? (d.avg / maxAvg * 100).toFixed(1) : 0;
+      return '<div class="gap-driver-row">' +
+        '<div class="gap-driver-abbr" style="color:' + col + '">' + code + '</div>' +
+        '<div class="gap-bar-wrap">' +
+          '<div class="gap-bar-track"><div class="gap-bar-fill" style="width:' + barPct + '%;background:' + col + '"></div></div>' +
+          '<div class="gap-bar-laps">' + d.races + ' lopp</div>' +
+        '</div>' +
+        '<div class="gap-val">' + dAvg + '</div>' +
+      '</div>';
+    }).join('');
+
+    html +=
+      '<div class="gap-team-card">' +
+        '<div class="gap-team-header">' +
+          '<div class="gap-team-rank ' + rankClass + '">' + rank + '</div>' +
+          '<div class="gap-team-color" style="background:' + col + '"></div>' +
+          '<div class="gap-team-name" style="color:' + col + '">' + teamName + '</div>' +
+          '<div class="gap-team-avg">' +
+            '<div class="gap-team-avg-val">' + avgFormatted + '</div>' +
+            '<div class="gap-team-avg-label">snitt gap</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="gap-driver-rows">' + driverRows + '</div>' +
+      '</div>';
+  });
+
+  loadEl.style.display = 'none';
+  contentEl.style.display = '';
+  document.getElementById('gap-list').innerHTML = html;
+  gapLoaded = true;
+  gapLoading = false;
+}
+
 
 function statsInit() {
   const grid = document.getElementById('stats-driver-grid');
