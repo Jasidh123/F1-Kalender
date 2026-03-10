@@ -959,6 +959,76 @@ header {
 .liga-empty-icon { font-size: 40px; margin-bottom: 10px; }
 .liga-empty-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
 .liga-empty-sub { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* ── TELEMETRI — MISSING CLASSES ────────────────────────────────────────── */
+.tm-driver-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--chip-color, var(--accent)); flex-shrink: 0;
+}
+.tm-driver-chip {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--surface2); border: 1.5px solid var(--border);
+  border-radius: var(--r-sm); padding: 8px 10px; cursor: pointer;
+  transition: all 0.15s; font-size: 12px; font-weight: 700;
+}
+.tm-driver-chip.selected {
+  border-color: var(--chip-color, var(--accent));
+  background: color-mix(in srgb, var(--chip-color, var(--accent)) 12%, var(--surface2));
+  color: var(--chip-color, var(--accent));
+}
+.tm-stats-grid { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+.tm-stat-card {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 10px 12px;
+}
+.tm-stat-card.tm-fastest { border-color: #c084fc; }
+.tm-stat-driver { font-size: 11px; font-weight: 700; margin-bottom: 3px; }
+.tm-stat-val { font-family: "Bebas Neue", sans-serif; font-size: 22px; line-height: 1; }
+.tm-stat-label { font-size: 10px; color: var(--muted); margin-top: 3px; }
+.tm-stints-wrap { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+.tm-stint-row { display: grid; grid-template-columns: 36px 1fr; align-items: center; gap: 8px; }
+.tm-stint-name { font-family: "Bebas Neue", sans-serif; font-size: 15px; }
+.tm-stint-bar-track { display: flex; height: 22px; border-radius: 4px; overflow: hidden; gap: 2px; }
+.tm-stint-seg {
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 800; min-width: 16px;
+  overflow: hidden; border-radius: 3px; transition: opacity 0.15s;
+}
+.tm-stint-seg:active { opacity: 0.7; }
+.tm-no-data { text-align: center; color: var(--muted); font-size: 13px; padding: 24px 0; }
+
+/* ── NEWS LIST ───────────────────────────────────────────────────────────── */
+#news-list { display: flex; flex-direction: column; gap: 0; }
+.news-refresh {
+  display: block; width: 100%; margin-bottom: 12px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--r-sm); color: var(--muted);
+  font-family: "DM Sans", sans-serif; font-size: 13px; font-weight: 600;
+  padding: 10px; cursor: pointer; transition: all 0.15s;
+}
+.news-refresh:active { opacity: 0.7; }
+.news-empty { text-align: center; color: var(--muted); font-size: 13px; padding: 40px 16px; line-height: 1.6; }
+
+/* ── H2H MISSING ─────────────────────────────────────────────────────────── */
+.h2h-content { display: flex; flex-direction: column; gap: 0; }
+.h2h-driver-name { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.h2h-side-abbr { font-family: "Bebas Neue", sans-serif; font-size: 28px; line-height: 1; }
+.h2h-vs-label {
+  font-family: "Bebas Neue", sans-serif; font-size: 18px; color: var(--muted);
+  background: var(--surface); padding: 4px 6px; border-radius: 6px;
+  position: absolute; white-space: nowrap;
+}
+.h2h-race-flag { font-size: 16px; text-align: center; }
+.h2h-race-name { font-size: 11px; font-weight: 600; color: var(--text2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.h2h-section-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin: 14px 0 8px; }
+
+/* ── CHART MISSING ───────────────────────────────────────────────────────── */
+#stab-chart { flex: 1; background: transparent; border: none; border-radius: 10px; color: var(--muted); font-family: "DM Sans", sans-serif; font-size: 13px; font-weight: 600; padding: 9px 4px; cursor: pointer; transition: all 0.18s; }
+#stab-chart.active { background: var(--surface3); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,0.5); }
+#pts-chart { width: 100%; display: block; }
+.chart-legend { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.chart-legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text2); }
+.chart-legend-dot { width: 10px; height: 3px; border-radius: 2px; flex-shrink: 0; }
 </style>
 </head>
 <body>
@@ -1287,7 +1357,7 @@ header {
 <div class="container" id="page-news" style="display:none">
   <div class="page-title">📰 Nyheter</div>
   <div class="page-subtitle">Senaste F1-nyheterna</div>
-  <div id="news-content"><div class="loading"><div class="spinner"></div>Hämtar nyheter...</div></div>
+  <div id="news-list"><div class="loading"><div class="spinner"></div>Hämtar nyheter...</div></div>
 </div>
 
 <!-- H2H PAGE -->
@@ -2077,7 +2147,17 @@ async function fetchChartData() {
 function toggleChartDriver(name) {
   if (chartActive.has(name)) chartActive.delete(name);
   else { if (chartActive.size>=6) { showToast('Max 6 förare'); return; } chartActive.add(name); }
-  showChart();
+  // Update button styles
+  document.querySelectorAll('.chart-driver-btn').forEach(btn => {
+    const bName = btn.textContent.trim();
+    const isActive = chartActive.has(bName);
+    const d = chartData?.drivers.find(d=>d.name===bName);
+    btn.classList.toggle('active', isActive);
+    btn.style.background = isActive && d ? d.color : '';
+    btn.style.borderColor = isActive && d ? d.color : '';
+    btn.style.color = isActive ? '#fff' : '';
+  });
+  drawChart();
 }
 
 function drawChart() {
@@ -2085,8 +2165,9 @@ function drawChart() {
   if (!canvas || !chartData) return;
   const ctx = canvas.getContext('2d');
   const dpr = window.devicePixelRatio||1;
-  const W = canvas.offsetWidth;
+  const W = canvas.offsetWidth || canvas.parentElement?.offsetWidth || 300;
   const H = 260;
+  canvas.style.width = '100%';
   canvas.width = W*dpr; canvas.height = H*dpr; canvas.style.height = H+'px';
   ctx.scale(dpr,dpr);
   const active = chartData.drivers.filter(d=>chartActive.has(d.name));
@@ -2119,8 +2200,7 @@ function drawChart() {
 }
 
 // ── FANTASY ───────────────────────────────────────────────────────────────
-const JSONBIN_KEY  = '$2a$10$ZNzSwGMKvn5gi51cnaxTFuCtZnVoXHaRCHANWihXDlH2y.OiZS/.6';
-const JSONBIN_BASE = 'https://api.jsonbin.io';
+
 // ── FANTASY (ombyggd) ────────────────────────────────────────────────────────
 const FX_KEY = 'f1_fx_profile_v2';
 const FX_PICKS_KEY = 'f1_fx_picks_v2';
@@ -2162,12 +2242,60 @@ function fxDriverEmoji(name) {
 }
 
 // ── Boot ───────────────────────────────────────────────────────────────────
+
+// ── Auto-score: hämtar race-resultat och beräknar poäng ──────────────────
+async function fxAutoScore() {
+  const picks = fxLoadPicks();
+  const profile = fxLoad();
+  if (!profile) return;
+
+  // Find past races that have unsaved picks (have slots but not scored)
+  const candidates = RACES_2026.filter(r => {
+    if (!isPast(r)) return false;
+    const entry = picks[String(r.round)];
+    return entry && !entry.scored && entry.slots.some(s => s);
+  });
+
+  if (!candidates.length) return;
+
+  let anyScored = false;
+  for (const race of candidates) {
+    try {
+      const res = await fetch(
+        'https://api.jolpi.ca/ergast/f1/2026/' + race.round + '/results/?limit=5',
+        { signal: AbortSignal.timeout(10000) }
+      );
+      if (!res.ok) continue;
+      const j = await res.json();
+      const results = j?.MRData?.RaceTable?.Races?.[0]?.Results;
+      if (!results || results.length < 5) continue;
+
+      // Map Jolpica names → app format "F. Lastname"
+      const top5 = results.slice(0, 5).map(r =>
+        (r.Driver.givenName.charAt(0) + '. ' + r.Driver.familyName)
+      );
+
+      fxScoreRound(String(race.round), top5);
+      anyScored = true;
+    } catch(e) { /* nätverksfel, försök nästa */ }
+  }
+
+  if (anyScored) {
+    showToast('🏁 Poäng beräknade!');
+    fxRenderProfile(fxLoad());
+    if (document.getElementById('fx-panel-tips')?.style.display !== 'none') fxRenderTips();
+    if (document.getElementById('fx-panel-history')?.style.display !== 'none') fxRenderHistory();
+  }
+}
+
 function fantasyInit() {
   const profile = fxLoad();
   if (!profile) {
     fxShowSetup();
   } else {
     fxShowMain(profile);
+    // Auto-beräkna poäng för avklarade lopp i bakgrunden
+    fxAutoScore().catch(() => {});
   }
 }
 
@@ -2402,6 +2530,8 @@ function fxSaveTip(rk) {
   fxEditMode = false;
   showToast('✅ Tips sparat!');
   fxRenderTips();
+  // Om loppet redan är kört, beräkna direkt
+  fxAutoScore().catch(() => {});
 }
 
 function fxStartEdit() { fxEditMode = true; fxRenderTips(); }
@@ -2518,9 +2648,19 @@ async function tmSelectRace(){
 async function tmFetchLapData(race){
   if(TM_CACHE[race.round]){tmLapData=TM_CACHE[race.round];tmShowDriverPicker();return;}
   try{
-    const sessAll=await fetch('https://api.openf1.org/v1/sessions?year=2026&session_name=Race',{signal:AbortSignal.timeout(10000)}).then(r=>r.ok?r.json():[]).catch(()=>[]);
+    const sessAll=await fetch('https://api.openf1.org/v1/sessions?year=2026',{signal:AbortSignal.timeout(10000)}).then(r=>r.ok?r.json():[]).catch(()=>[]);
     const raceSessions=sessAll.filter(s=>s.session_name==='Race').sort((a,b)=>a.session_key-b.session_key);
-    let sessionKey=raceSessions[race.round-1]?.session_key||raceSessions[raceSessions.length-1]?.session_key;
+    // Match session to race by date proximity
+    const raceDate=new Date(race.raceDate+'T00:00:00');
+    let sessionKey=null;
+    if(raceSessions.length){
+      const best=raceSessions.reduce((prev,cur)=>{
+        const pd=Math.abs(new Date(prev.date_start)-raceDate);
+        const cd=Math.abs(new Date(cur.date_start)-raceDate);
+        return cd<pd?cur:prev;
+      });
+      if(Math.abs(new Date(best.date_start)-raceDate)<3*24*3600*1000) sessionKey=best.session_key;
+    }
     if(!sessionKey){tmShowStatus('Ingen data tillgänglig för detta lopp ännu');return;}
     const[lapsRaw,driversRaw,stintsRaw]=await Promise.all([
       fetch(`https://api.openf1.org/v1/laps?session_key=${sessionKey}`,{signal:AbortSignal.timeout(15000)}).then(r=>r.ok?r.json():[]).catch(()=>[]),
@@ -2549,7 +2689,7 @@ function tmShowDriverPicker(){
     const chip=document.createElement('div');
     chip.className='tm-driver-chip'; chip.style.setProperty('--chip-color',info.color);
     chip.dataset.abbr=info.abbr; chip.dataset.num=num;
-    chip.innerHTML=`<div class="tm-driver-dot"></div><span>${info.abbr}</span>`;
+    chip.innerHTML='<div class="tm-driver-dot" style="background:'+info.color+'"></div><span>'+info.abbr+'</span>';
     chip.onclick=()=>tmToggleDriver(chip,info.abbr);
     grid.appendChild(chip);
   });
@@ -2571,7 +2711,7 @@ function tmToggleDriver(chip,abbr){
 
 function tmShowMetric(metric){
   tmCurrentMetric=metric;
-  ['laptime','pace','stints'].forEach(m=>document.getElementById('tmtab-'+m).classList.toggle('active',m===metric));
+  ['laptime','pace','stints'].forEach(m=>{const el=document.getElementById('tmtab-'+m);if(el)el.classList.toggle('active',m===metric);});
   tmRender();
 }
 
@@ -2595,7 +2735,7 @@ function tmRenderChart(){
   const selNums=tmSelectedDrivers.map(abbr=>Object.entries(driverMap).find(([,d])=>d.abbr===abbr)?.[0]).filter(Boolean);
   const canvas=document.getElementById('tm-canvas');
   const dpr=window.devicePixelRatio||1;
-  const W=canvas.offsetWidth||canvas.parentElement.offsetWidth||320;
+  canvas.style.width='100%'; const W=canvas.parentElement?.offsetWidth||canvas.offsetWidth||320;
   const H=Math.round(W*0.6);
   canvas.width=W*dpr; canvas.height=H*dpr; canvas.style.height=H+'px';
   const ctx=canvas.getContext('2d'); ctx.scale(dpr,dpr);
@@ -2665,9 +2805,16 @@ function tmRenderStints(){
 
 function tmShowStatus(msg){
   const el=document.getElementById('tm-status');
-  if(msg==='loading'){el.innerHTML='<div class="loading"><div class="spinner"></div>Hämtar telemetri...</div>';el.style.display='';}
-  else if(msg){el.textContent=msg;el.style.display='';}
-  else el.style.display='none';
+  if(!el)return;
+  if(msg==='loading'){
+    el.innerHTML='<div class="loading"><div class="spinner"></div>Hämtar varvtidsdata...</div>';
+    el.style.display='';
+  } else if(msg){
+    el.innerHTML='<div style="text-align:center;padding:24px 0;color:var(--muted);font-size:13px">'+msg+'</div>';
+    el.style.display='';
+  } else {
+    el.style.display='none';
+  }
 }
 
 // ── THEME ─────────────────────────────────────────────────────────────────
@@ -3344,73 +3491,118 @@ function circShowDetail(round) {
 
 // ── NEWS PAGE ──────────────────────────────────────────────────────────────
 let newsLoaded = false;
+
+function newsTimeAgo(dateStr) {
+  const date = new Date(dateStr);
+  if (isNaN(date)) return '';
+  const diff = Math.floor((Date.now() - date) / 1000);
+  if (diff < 60)   return 'Just nu';
+  if (diff < 3600) return Math.floor(diff/60) + ' min sedan';
+  if (diff < 86400) return Math.floor(diff/3600) + ' tim sedan';
+  return Math.floor(diff/86400) + ' dagar sedan';
+}
+
+function newsRenderItems(items, source) {
+  if (!items.length) return '';
+  const seen = new Set();
+  return items
+    .filter(item => {
+      const key = (item.title||'').toLowerCase().trim().slice(0,60);
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .map(item => {
+      const ago = newsTimeAgo(item.pubDate);
+      const thumb = item.thumbnail || item.enclosure?.link || '';
+      const thumbHtml = thumb
+        ? `<img class="news-thumb" src="${thumb}" alt="" loading="lazy" onerror="this.style.display='none'">`
+        : '';
+      const desc = (item.description || '').replace(/<[^>]+>/g,'').trim().slice(0, 160);
+      const link = (item.link || '').replace(/'/g, '%27');
+      return `<div class="news-item" onclick="window.open('${link}','_blank')">
+        ${thumbHtml}
+        <div class="news-body">
+          <div class="news-source">${source}</div>
+          <div class="news-title">${item.title || ''}</div>
+          ${desc ? `<div class="news-desc">${desc}</div>` : ''}
+          <div class="news-date">${ago}</div>
+        </div>
+      </div>`;
+    }).join('');
+}
+
+async function newsFetch(rssUrl, source) {
+  const api = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(rssUrl) + '&count=20';
+  const res = await fetch(api, { signal: AbortSignal.timeout(10000) });
+  if (!res.ok) throw new Error(source + ' HTTP ' + res.status);
+  const data = await res.json();
+  if (!data.items?.length) throw new Error(source + ': inga artiklar');
+  return data.items;
+}
+
 async function newsInit(force=false) {
   if (newsLoaded && !force) return;
   newsLoaded = true;
+
   const el = document.getElementById('news-list');
   if (!el) return;
   el.innerHTML = '<div class="loading"><div class="spinner"></div>Hämtar nyheter...</div>';
 
-  // Use rss2json to convert BBC Sport F1 RSS → JSON (CORS-friendly)
-  const RSS_URL = encodeURIComponent('https://feeds.bbci.co.uk/sport/formula1/rss.xml');
-  const API = `https://api.rss2json.com/v1/api.json?rss_url=${RSS_URL}&count=20`;
+  const FEEDS = [
+    { url: 'https://feeds.bbci.co.uk/sport/formula1/rss.xml',   source: 'BBC Sport' },
+    { url: 'https://www.autosport.com/rss/f1/news/',             source: 'Autosport' },
+    { url: 'https://www.motorsport.com/rss/f1/news/',            source: 'Motorsport.com' },
+  ];
 
-  try {
-    const res = await fetch(API, {signal: AbortSignal.timeout(10000)});
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
-    const items = data.items || [];
-    if (!items.length) throw new Error('Inga nyheter');
+  let allItems = [];
+  let loaded = 0;
 
-    const html = `<button class="news-refresh" onclick="newsInit(true)">🔄 Uppdatera</button>` +
-      items.map(item => {
-        const date = new Date(item.pubDate);
-        const dateStr = isNaN(date) ? '' : fmtDate(date) + ' ' + fmtTime(date);
-        const thumb = item.thumbnail || item.enclosure?.link || '';
-        const thumbHtml = thumb ? `<img class="news-thumb" src="${thumb}" alt="" loading="lazy" onerror="this.style.display='none'">` : '';
-        const desc = (item.description || '').replace(/<[^>]+>/g,'').trim();
-        return `<div class="news-item" onclick="window.open('${item.link}','_blank')">
-          ${thumbHtml}
-          <div class="news-body">
-            <div class="news-source">BBC Sport F1</div>
-            <div class="news-title">${item.title}</div>
-            ${desc ? `<div class="news-desc">${desc}</div>` : ''}
-            <div class="news-date">${dateStr}</div>
-          </div>
-        </div>`;
-      }).join('');
-    el.innerHTML = html;
-  } catch(e) {
-    // Fallback: try another RSS source
+  for (const feed of FEEDS) {
     try {
-      const RSS2 = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent('https://www.autosport.com/rss/f1/news/')}&count=20`;
-      const res2 = await fetch(RSS2, {signal: AbortSignal.timeout(8000)});
-      const data2 = await res2.json();
-      const items2 = data2.items || [];
-      if (!items2.length) throw new Error('Inga nyheter');
-      const html2 = `<button class="news-refresh" onclick="newsInit(true)">🔄 Uppdatera</button>` +
-        items2.map(item => {
-          const date = new Date(item.pubDate);
-          const dateStr = isNaN(date) ? '' : fmtDate(date) + ' ' + fmtTime(date);
-          const thumb = item.thumbnail || '';
-          const thumbHtml = thumb ? `<img class="news-thumb" src="${thumb}" alt="" loading="lazy" onerror="this.style.display='none'">` : '';
-          const desc = (item.description || '').replace(/<[^>]+>/g,'').trim().slice(0,200);
-          return `<div class="news-item" onclick="window.open('${item.link}','_blank')">
-            ${thumbHtml}
-            <div class="news-body">
-              <div class="news-source">Autosport</div>
-              <div class="news-title">${item.title}</div>
-              ${desc ? `<div class="news-desc">${desc}</div>` : ''}
-              <div class="news-date">${dateStr}</div>
-            </div>
-          </div>`;
-        }).join('');
-      el.innerHTML = html2;
-    } catch(e2) {
-      newsLoaded = false;
-      el.innerHTML = `<div class="news-empty">📡 Kunde inte hämta nyheter.<br><small>Kontrollera din anslutning</small><br><br><button class="news-refresh" onclick="newsInit(true)">🔄 Försök igen</button></div>`;
-    }
+      const items = await newsFetch(feed.url, feed.source);
+      items.forEach(i => { i._source = feed.source; });
+      allItems = allItems.concat(items);
+      loaded++;
+    } catch(e) { /* try next */ }
   }
+
+  if (!allItems.length) {
+    newsLoaded = false;
+    el.innerHTML = `<div class="news-empty">📡 Kunde inte hämta nyheter.<br><small>Kontrollera din anslutning</small><br><br><button class="news-refresh" onclick="newsInit(true)">🔄 Försök igen</button></div>`;
+    return;
+  }
+
+  // Sort by date, deduplicate across sources
+  allItems.sort((a,b) => new Date(b.pubDate) - new Date(a.pubDate));
+  const seen = new Set();
+  const deduped = allItems.filter(item => {
+    const key = (item.title||'').toLowerCase().trim().slice(0,50);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+
+  const itemsHtml = deduped.map(item => {
+    const ago = newsTimeAgo(item.pubDate);
+    const thumb = item.thumbnail || item.enclosure?.link || '';
+    const thumbHtml = thumb
+      ? `<img class="news-thumb" src="${thumb}" alt="" loading="lazy" onerror="this.style.display='none'">`
+      : '';
+    const desc = (item.description || '').replace(/<[^>]+>/g,'').trim().slice(0, 160);
+    const link = (item.link || '').replace(/'/g, '%27');
+    return `<div class="news-item" onclick="window.open('${link}','_blank')">
+      ${thumbHtml}
+      <div class="news-body">
+        <div class="news-source">${item._source || ''}</div>
+        <div class="news-title">${item.title || ''}</div>
+        ${desc ? `<div class="news-desc">${desc}</div>` : ''}
+        <div class="news-date">${ago}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  el.innerHTML = `<button class="news-refresh" onclick="newsInit(true)">🔄 Uppdatera</button>` + itemsHtml;
 }
 
 // ── HEAD TO HEAD PAGE ────────────────────────────────────────────────────────
@@ -3491,7 +3683,7 @@ async function h2hSelectTeam(teamName) {
 function h2hRender(team, data) {
   const [n1, n2] = team.drivers;
   const d1 = DRIVER_IDS[n1], d2 = DRIVER_IDS[n2];
-  const col1 = teamColor(team.name), col2 = col1; // same team color, differentiate by opacity
+  const col1 = teamColor(team.name), col2 = col1; // same team, differentiated by opacity in render
   const { raceMap1, raceMap2, qualiMap1, qualiMap2 } = data;
 
   document.getElementById('h2h-loading').style.display = 'none';
@@ -3533,7 +3725,7 @@ function h2hRender(team, data) {
   });
 
   // VS header
-  document.getElementById('h2h-vs-header').style = `--d1col:${col1};--d2col:${col2}`;
+  document.getElementById('h2h-vs-header').style = `--d1col:${col1};--d2col:${col2};opacity:1`;
   document.getElementById('h2h-vs-header').innerHTML = `
     <div class="h2h-driver-side left">
       <div class="h2h-side-abbr" style="color:${col1}">${d1.abbr}</div>
@@ -3600,8 +3792,10 @@ function h2hRender(team, data) {
     </div>`;
   }).join('');
 
-  document.getElementById('h2h-race-list').innerHTML = raceRows ||
-    '<div class="stats-empty">Inga lopp körda ännu</div>';
+  document.getElementById('h2h-race-list').innerHTML =
+    raceRows
+      ? '<div class="h2h-section-label">Race för race</div>' + raceRows
+      : '<div class="stats-empty">Inga lopp körda ännu</div>';
 
   document.getElementById('h2h-content').style.display = '';
 }
