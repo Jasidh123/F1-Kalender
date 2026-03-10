@@ -1102,6 +1102,60 @@ header {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
+
+/* ── WIDGETS ──────────────────────────────────────────────────────────────── */
+.widget-stack { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
+
+/* Countdown + Weather widget */
+.widget-next-race {
+  background: linear-gradient(135deg, var(--surface2) 0%, var(--surface3,#1a1a1a) 100%);
+  border: 1px solid var(--border); border-radius: var(--r-md);
+  overflow: hidden; position: relative;
+}
+.widget-next-race-accent {
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--accent);
+}
+.widget-next-body { padding: 14px 16px 12px; }
+.widget-next-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 4px; }
+.widget-next-name { font-family: "Bebas Neue", sans-serif; font-size: 26px; line-height: 1; color: var(--text); }
+.widget-next-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+.widget-next-row { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; gap: 8px; }
+.widget-countdown {
+  display: flex; gap: 8px;
+}
+.widget-cd-unit { text-align: center; }
+.widget-cd-val { font-family: "Bebas Neue", sans-serif; font-size: 28px; line-height: 1; color: var(--text); }
+.widget-cd-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.widget-cd-sep { font-family: "Bebas Neue", sans-serif; font-size: 24px; color: var(--border); align-self: flex-start; padding-top: 2px; }
+.widget-weather {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 2px;
+  min-width: 80px;
+}
+.widget-weather-temp { font-family: "Bebas Neue", sans-serif; font-size: 28px; line-height: 1; }
+.widget-weather-desc { font-size: 10px; color: var(--muted); text-align: right; }
+.widget-weather-rain { font-size: 10px; font-weight: 600; color: #60a5fa; text-align: right; }
+
+/* Championship gap widget */
+.widget-gap {
+  background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r-md);
+  padding: 14px 16px;
+}
+.widget-gap-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 10px; }
+.widget-gap-rows { display: flex; flex-direction: column; gap: 6px; }
+.widget-gap-row { display: grid; grid-template-columns: 22px 1fr auto; align-items: center; gap: 8px; }
+.widget-gap-pos { font-family: "Bebas Neue", sans-serif; font-size: 13px; color: var(--muted); }
+.widget-gap-pos.p1 { color: var(--gold, #f59e0b); }
+.widget-gap-pos.p2 { color: var(--silver, #94a3b8); }
+.widget-gap-pos.p3 { color: var(--bronze, #b45309); }
+.widget-gap-info { display: flex; flex-direction: column; gap: 1px; overflow: hidden; }
+.widget-gap-name { font-size: 13px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.widget-gap-team { font-size: 10px; color: var(--muted); }
+.widget-gap-pts { font-family: "Bebas Neue", sans-serif; font-size: 18px; color: var(--text); }
+.widget-gap-bar-wrap { grid-column: 2 / 4; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; margin-top: -4px; }
+.widget-gap-bar { height: 100%; border-radius: 2px; transition: width 0.6s ease; }
+.widget-gap-diff { font-size: 10px; color: var(--muted); font-weight: 600; }
+.widget-gap-loading { text-align: center; color: var(--muted); font-size: 12px; padding: 12px 0; }
 </style>
 </head>
 <body>
@@ -1117,6 +1171,36 @@ header {
 <!-- CALENDAR PAGE -->
 <div class="container" id="page-calendar">
   <div id="pull-indicator" class="pull-indicator"></div>
+  <div class="widget-stack" id="widget-stack">
+    <!-- Next Race + Weather widget -->
+    <div class="widget-next-race" id="widget-next-race">
+      <div class="widget-next-race-accent"></div>
+      <div class="widget-next-body">
+        <div class="widget-next-label">Nästa race</div>
+        <div class="widget-next-name" id="wcd-name">—</div>
+        <div class="widget-next-sub" id="wcd-sub">—</div>
+        <div class="widget-next-row">
+          <div class="widget-countdown" id="wcd-countdown">
+            <div class="widget-cd-unit"><div class="widget-cd-val" id="wcd-d">—</div><div class="widget-cd-label">Dagar</div></div>
+            <div class="widget-cd-sep">:</div>
+            <div class="widget-cd-unit"><div class="widget-cd-val" id="wcd-h">—</div><div class="widget-cd-label">Tim</div></div>
+            <div class="widget-cd-sep">:</div>
+            <div class="widget-cd-unit"><div class="widget-cd-val" id="wcd-m">—</div><div class="widget-cd-label">Min</div></div>
+          </div>
+          <div class="widget-weather" id="wcd-weather">
+            <div class="widget-weather-temp" id="wcd-temp">—°</div>
+            <div class="widget-weather-desc" id="wcd-desc">Hämtar väder...</div>
+            <div class="widget-weather-rain" id="wcd-rain"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Championship gap widget -->
+    <div class="widget-gap" id="widget-gap">
+      <div class="widget-gap-label">🏆 VM-kampen</div>
+      <div id="widget-gap-content"><div class="widget-gap-loading">Hämtar ställning...</div></div>
+    </div>
+  </div>
   <div id="race-list"></div>
 </div>
 
@@ -1629,6 +1713,139 @@ const openCards = new Set();
 const resultsCache = {};
 const weatherCache = {};
 const historyCache = {};
+
+
+// ── WIDGETS ───────────────────────────────────────────────────────────────────
+let widgetCountdownTimer = null;
+
+function widgetInit() {
+  widgetInitCountdown();
+  widgetInitGap();
+}
+
+// ── Countdown + Weather ───────────────────────────────────────────────────────
+function widgetInitCountdown() {
+  const next = RACES_2026.find(r => !isPast(r));
+  if (!next) {
+    document.getElementById('widget-next-race').style.display = 'none';
+    return;
+  }
+
+  // Accent color from next race
+  document.querySelector('.widget-next-race-accent').style.background = 'var(--accent)';
+  document.getElementById('wcd-name').textContent = next.flag + ' ' + next.name;
+
+  // Race time — assume 15:00 local (approx race start)
+  const raceMs = new Date(next.raceDate + 'T13:00:00Z').getTime();
+
+  function tick() {
+    const diff = raceMs - Date.now();
+    if (diff <= 0) {
+      document.getElementById('wcd-d').textContent = '00';
+      document.getElementById('wcd-h').textContent = '00';
+      document.getElementById('wcd-m').textContent = '00';
+      document.getElementById('wcd-sub').textContent = '🏁 Race pågår!';
+      return;
+    }
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    document.getElementById('wcd-d').textContent = String(d).padStart(2,'0');
+    document.getElementById('wcd-h').textContent = String(h).padStart(2,'0');
+    document.getElementById('wcd-m').textContent = String(m).padStart(2,'0');
+  }
+  tick();
+  if (widgetCountdownTimer) clearInterval(widgetCountdownTimer);
+  widgetCountdownTimer = setInterval(tick, 30000);
+
+  // Sub-text: circuit + date
+  const rd = new Date(next.raceDate);
+  const dateStr = rd.toLocaleDateString('sv-SE', { weekday:'long', month:'long', day:'numeric' });
+  document.getElementById('wcd-sub').textContent = next.circuit + ' · ' + dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+
+  // Fetch weather
+  widgetFetchWeather(next);
+}
+
+async function widgetFetchWeather(race) {
+  try {
+    const url = 'https://api.open-meteo.com/v1/forecast'
+      + '?latitude=' + race.lat
+      + '&longitude=' + race.lon
+      + '&daily=temperature_2m_max,precipitation_probability_max,weathercode'
+      + '&timezone=auto&forecast_days=14';
+    const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
+    if (!res.ok) throw new Error();
+    const j = await res.json();
+
+    // Find the race date in forecast
+    const idx = j.daily.time.indexOf(race.raceDate);
+    if (idx < 0) { document.getElementById('wcd-desc').textContent = 'Ej tillgängligt'; return; }
+
+    const temp = Math.round(j.daily.temperature_2m_max[idx]);
+    const rain = j.daily.precipitation_probability_max[idx];
+    const code = j.daily.weathercode[idx];
+
+    const weatherEmoji = code <= 1 ? '☀️' : code <= 3 ? '⛅' : code <= 48 ? '🌫️' : code <= 67 ? '🌧️' : code <= 77 ? '❄️' : '⛈️';
+    const weatherDesc = code <= 1 ? 'Klart' : code <= 3 ? 'Delvis molnigt' : code <= 48 ? 'Dimmigt' : code <= 67 ? 'Regn' : code <= 77 ? 'Snö' : 'Åskväder';
+
+    const col = temp > 30 ? '#f97316' : temp > 20 ? '#facc15' : temp > 10 ? '#86efac' : '#93c5fd';
+    document.getElementById('wcd-temp').textContent = weatherEmoji + ' ' + temp + '°';
+    document.getElementById('wcd-temp').style.color = col;
+    document.getElementById('wcd-desc').textContent = weatherDesc;
+    document.getElementById('wcd-rain').textContent = rain > 10 ? '💧 ' + rain + '% regn' : '';
+  } catch(e) {
+    document.getElementById('wcd-desc').textContent = 'Väder ej tillgängligt';
+  }
+}
+
+// ── Championship gap ──────────────────────────────────────────────────────────
+let widgetGapCache = null;
+
+async function widgetInitGap() {
+  const el = document.getElementById('widget-gap-content');
+  if (widgetGapCache) { widgetRenderGap(widgetGapCache); return; }
+
+  try {
+    const res = await fetch('https://api.jolpi.ca/ergast/f1/2026/driverStandings/', { signal: AbortSignal.timeout(10000) });
+    if (!res.ok) throw new Error();
+    const j = await res.json();
+    const standings = j?.MRData?.StandingsTable?.StandingsLists?.[0]?.DriverStandings;
+    if (!standings?.length) throw new Error();
+
+    const top3 = standings.slice(0, 3).map(s => ({
+      pos: parseInt(s.position),
+      name: s.Driver.givenName.charAt(0) + '. ' + s.Driver.familyName,
+      team: s.Constructors?.[0]?.name || '',
+      pts: parseFloat(s.points),
+    }));
+    widgetGapCache = top3;
+    widgetRenderGap(top3);
+  } catch(e) {
+    el.innerHTML = '<div class="widget-gap-loading">Inga ställningsdata än</div>';
+  }
+}
+
+function widgetRenderGap(top3) {
+  const el = document.getElementById('widget-gap-content');
+  if (!el) return;
+  const maxPts = top3[0]?.pts || 1;
+  const posClasses = ['p1','p2','p3'];
+  let html = '<div class="widget-gap-rows">';
+  top3.forEach((d, i) => {
+    const col = teamColor(d.team) || 'var(--accent)';
+    const barW = Math.round(d.pts / maxPts * 100);
+    const gapStr = i === 0 ? 'Leader' : '–' + (top3[0].pts - d.pts) + ' p';
+    html += '<div class="widget-gap-row">'
+      + '<div class="widget-gap-pos ' + posClasses[i] + '">' + d.pos + '</div>'
+      + '<div class="widget-gap-info"><div class="widget-gap-name">' + d.name + '</div><div class="widget-gap-team">' + d.team + '</div></div>'
+      + '<div style="text-align:right"><div class="widget-gap-pts">' + d.pts + '</div><div class="widget-gap-diff">' + gapStr + '</div></div>'
+      + '</div>'
+      + '<div class="widget-gap-bar-wrap" style="grid-column:1/4"><div class="widget-gap-bar" style="width:' + barW + '%;background:' + col + '"></div></div>';
+  });
+  html += '</div>';
+  el.innerHTML = html;
+}
 
 function buildCalendar() {
   const list = document.getElementById('race-list');
@@ -3935,6 +4152,7 @@ function h2hRender(team, data) {
 
 function init(){
   buildCalendar();
+  widgetInit();
   setInterval(updateClock,1000);
   updateClock();
   updateNotifyBtn();
