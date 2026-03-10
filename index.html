@@ -1029,6 +1029,79 @@ header {
 .chart-legend { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
 .chart-legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text2); }
 .chart-legend-dot { width: 10px; height: 3px; border-radius: 2px; flex-shrink: 0; }
+
+/* ── FANTASY PROFIL / LIGA ───────────────────────────────────────────────── */
+.fx-profile-kpi-row {
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; margin: 12px 0;
+}
+.fx-profile-kpi {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 10px 6px; text-align: center;
+}
+.fx-profile-kpi-val {
+  font-family: "Bebas Neue", sans-serif; font-size: 22px; line-height: 1; color: var(--text);
+}
+.fx-profile-kpi-label { font-size: 9px; color: var(--muted); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.4px; }
+
+.fx-sparkline {
+  display: flex; align-items: flex-end; gap: 4px; height: 44px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 6px 10px; margin-bottom: 2px;
+}
+.fx-spark-bar-wrap { flex: 1; display: flex; align-items: flex-end; }
+.fx-spark-bar { width: 100%; border-radius: 2px 2px 0 0; min-height: 3px; transition: height 0.4s ease; }
+
+.fx-next-tip-row {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 10px 12px;
+  font-size: 13px; font-weight: 600;
+}
+.fx-next-tip-status { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 5px; }
+.fx-next-tip-status.open   { background: rgba(34,197,94,0.12); color: #22c55e; }
+.fx-next-tip-status.saved  { background: rgba(var(--accent-rgb,225,6,0),0.1); color: var(--accent); }
+.fx-next-tip-status.closed { background: rgba(255,255,255,0.05); color: var(--muted); }
+.fx-next-tip-status.scored { background: rgba(34,197,94,0.12); color: #22c55e; }
+
+.liga-hist-row {
+  display: grid; grid-template-columns: 22px 1fr 60px 44px;
+  align-items: center; gap: 8px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 9px 12px;
+}
+.liga-hist-row.liga-hist-best { border-color: var(--accent); }
+.liga-hist-bar-wrap { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.liga-hist-bar { height: 100%; border-radius: 2px; transition: width 0.5s ease; }
+
+/* ── FANTASY VIEWS ───────────────────────────────────────────────────────── */
+#fx-view-setup, #fx-view-main { display: flex; flex-direction: column; gap: 0; }
+.fx-pick-race-name { font-family: "Bebas Neue", sans-serif; font-size: 20px; color: var(--text); }
+
+/* ── TOAST ───────────────────────────────────────────────────────────────── */
+#toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(16px);
+  background: var(--surface3, #222);
+  color: var(--text);
+  font-family: "DM Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 20px;
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.05) inset;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  z-index: 9999;
+}
+#toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
 </style>
 </head>
 <body>
@@ -1134,7 +1207,7 @@ header {
     <div class="fx-tabs">
       <button class="fx-tab active" id="fxtab-tips" onclick="fxTab('tips')">🎯 Mitt tips</button>
       <button class="fx-tab" id="fxtab-history" onclick="fxTab('history')">📋 Historik</button>
-      <button class="fx-tab" id="fxtab-liga" onclick="fxTab('liga')">🏆 Liga</button>
+      <button class="fx-tab" id="fxtab-liga" onclick="fxTab('liga')">📊 Min profil</button>
     </div>
 
     <div id="fx-panel-tips"></div>
@@ -2383,24 +2456,72 @@ function fxRenderLiga() {
     panel.innerHTML = '<div class="liga-empty"><div class="liga-empty-icon">👤</div><div>Skapa en profil för att se din liga</div></div>';
     return;
   }
-  let total = 0;
-  const scored = Object.entries(picks).filter(([,p]) => p.scored);
-  scored.forEach(([,p]) => { total += (p.pts || 0); });
 
+  const scored = Object.entries(picks)
+    .filter(([,p]) => p.scored)
+    .sort((a,b) => parseInt(a[0]) - parseInt(b[0]));
+
+  let total = 0, best = 0, bestRace = null;
+  const ptsList = scored.map(([rk, entry]) => {
+    total += entry.pts || 0;
+    if ((entry.pts || 0) > best) { best = entry.pts; bestRace = rk; }
+    return entry.pts || 0;
+  });
+  const avg = scored.length ? (total / scored.length).toFixed(1) : '—';
   const col = teamColor(profile.team);
   const emoji = fxDriverEmoji(profile.driver);
 
-  let histRows = scored
-    .sort((a,b) => parseInt(b[0])-parseInt(a[0]))
-    .map(([rk, entry]) => {
-      const race = RACES_2026.find(r => String(r.round) === rk);
-      if (!race) return '';
-      return '<div class="liga-hist-row">'
-        + '<span class="liga-hist-flag">' + race.flag + '</span>'
-        + '<span class="liga-hist-name">' + race.name + '</span>'
-        + '<span class="liga-hist-pts">' + entry.pts + ' p</span>'
+  // ── KPI row ──────────────────────────────────────────────────────────────
+  const kpiHtml = '<div class="fx-profile-kpi-row">'
+    + '<div class="fx-profile-kpi"><div class="fx-profile-kpi-val">' + total + '</div><div class="fx-profile-kpi-label">Totalpoäng</div></div>'
+    + '<div class="fx-profile-kpi"><div class="fx-profile-kpi-val">' + (scored.length || 0) + '</div><div class="fx-profile-kpi-label">Race tippad</div></div>'
+    + '<div class="fx-profile-kpi"><div class="fx-profile-kpi-val">' + avg + '</div><div class="fx-profile-kpi-label">Snitt / race</div></div>'
+    + '<div class="fx-profile-kpi"><div class="fx-profile-kpi-val">' + (best || '—') + '</div><div class="fx-profile-kpi-label">Bästa race</div></div>'
+    + '</div>';
+
+  // ── Mini sparkline ────────────────────────────────────────────────────────
+  let sparkHtml = '';
+  if (ptsList.length > 1) {
+    const maxP = Math.max(...ptsList, 1);
+    const bars = ptsList.map((p, i) => {
+      const h = Math.round((p / maxP) * 36);
+      const isLatest = i === ptsList.length - 1;
+      return '<div class="fx-spark-bar-wrap" title="' + p + ' p">'
+        + '<div class="fx-spark-bar" style="height:' + h + 'px;background:' + (isLatest ? col : 'var(--border2,#333)') + '"></div>'
         + '</div>';
     }).join('');
+    sparkHtml = '<div class="stats-section-label" style="margin:14px 0 6px">Poängutveckling</div>'
+      + '<div class="fx-sparkline">' + bars + '</div>';
+  }
+
+  // ── Race-by-race list ─────────────────────────────────────────────────────
+  let histRows = scored.slice().reverse().map(([rk, entry]) => {
+    const race = RACES_2026.find(r => String(r.round) === rk);
+    if (!race) return '';
+    const isBest = rk === bestRace;
+    const barW = best > 0 ? Math.round((entry.pts / best) * 100) : 0;
+    return '<div class="liga-hist-row' + (isBest ? ' liga-hist-best' : '') + '">'
+      + '<span class="liga-hist-flag">' + race.flag + '</span>'
+      + '<span class="liga-hist-name">' + race.name + (isBest ? ' 🏆' : '') + '</span>'
+      + '<div class="liga-hist-bar-wrap">'
+      +   '<div class="liga-hist-bar" style="width:' + barW + '%;background:' + col + '"></div>'
+      + '</div>'
+      + '<span class="liga-hist-pts">' + entry.pts + ' p</span>'
+      + '</div>';
+  }).join('');
+
+  // ── Next race tip status ──────────────────────────────────────────────────
+  const nextRace = fxNextRace();
+  const nextRk = String(nextRace.round);
+  const nextEntry = picks[nextRk];
+  const nextFilled = nextEntry?.slots?.filter(s => s).length || 0;
+  const nextLocked = fxIsLocked(nextRace);
+  const tipStatusHtml = '<div class="fx-next-tip-row">'
+    + '<span>' + nextRace.flag + ' ' + nextRace.name + '</span>'
+    + '<span class="fx-next-tip-status ' + (nextEntry?.scored ? 'scored' : nextLocked ? 'closed' : nextFilled === 5 ? 'saved' : 'open') + '">'
+    + (nextEntry?.scored ? '✅ Beräknad' : nextLocked && !nextFilled ? '⚠️ Inget tips' : nextLocked ? '🔒 Låst' : nextFilled === 5 ? '💾 Sparat' : '🟢 ' + nextFilled + '/5 valt')
+    + '</span>'
+    + '</div>';
 
   panel.innerHTML =
     '<div class="liga-me-card">'
@@ -2411,8 +2532,12 @@ function fxRenderLiga() {
     + '</div>'
     + '<div class="liga-me-pts">' + total + '<span class="liga-pts-label"> p</span></div>'
     + '</div>'
+    + kpiHtml
+    + '<div class="stats-section-label" style="margin:14px 0 6px">Nästa race</div>'
+    + tipStatusHtml
+    + sparkHtml
     + (histRows
-        ? '<div class="stats-section-label" style="margin:12px 0 6px">Poäng per race</div><div class="liga-hist-list">' + histRows + '</div>'
+        ? '<div class="stats-section-label" style="margin:14px 0 6px">Race för race</div><div class="liga-hist-list">' + histRows + '</div>'
         : '<div class="liga-empty" style="padding:20px 0"><div class="liga-empty-icon">🏁</div><div>Inga beräknade race ännu</div></div>');
 }
 
@@ -2475,7 +2600,7 @@ function fxRenderTips() {
 
   // Bonus note
   let bonusHtml = '';
-  if (entry.scored && entry.bonusTeam || entry.bonusDriver) {
+  if (entry.scored && (entry.bonusTeam || entry.bonusDriver)) {
     const parts = [];
     if (entry.bonusTeam)   parts.push(`+1 för ${profile?.team}`);
     if (entry.bonusDriver) parts.push(`+1 för ${profile?.driver}`);
@@ -2494,6 +2619,7 @@ function fxRenderTips() {
     }
   }
 
+  const countLabel = entry.scored ? '' : (filled + '/5 valda');
   document.getElementById('fx-panel-tips').innerHTML = `
     <div class="fx-pick-card">
       <div class="fx-pick-head">
@@ -2504,14 +2630,10 @@ function fxRenderTips() {
       <div class="fx-slots">${slotsHtml}</div>
       ${bonusHtml}
       <div class="fx-footer">
-        <div class="fx-count">${entry.scored?'':'${filled}/5 valda'}</div>
+        <div class="fx-count">${countLabel}</div>
         <div style="display:flex;gap:8px">${footerBtns}</div>
       </div>
     </div>`;
-  // fix template literal inside string
-  document.getElementById('fx-panel-tips').innerHTML = document.getElementById('fx-panel-tips').innerHTML
-    .replace("'${filled}/5 valda'", `'${filled}/5 valda'`)
-    .replace('${filled}/5 valda', `${filled}/5 valda`);
 }
 
 function fxUpdateSlot(rk, idx, val) {
@@ -2519,6 +2641,13 @@ function fxUpdateSlot(rk, idx, val) {
   if (!picks[rk]) picks[rk] = { slots: Array(5).fill(''), scored: false, pts: 0 };
   picks[rk].slots[idx] = val;
   fxSavePicks(picks);
+  // Update live counter without full re-render
+  const filled = picks[rk].slots.filter(s => s).length;
+  const counter = document.querySelector('#fx-panel-tips .fx-count');
+  if (counter) counter.textContent = filled + '/5 valda';
+  // Show/hide save button
+  const saveBtn = document.querySelector('#fx-panel-tips .fx-btn-primary');
+  if (saveBtn) saveBtn.disabled = filled < 5;
 }
 
 function fxSaveTip(rk) {
@@ -2529,7 +2658,11 @@ function fxSaveTip(rk) {
   fxSavePicks(picks);
   fxEditMode = false;
   showToast('✅ Tips sparat!');
-  fxRenderTips();
+  // Navigate to min profil tab to show development
+  setTimeout(() => {
+    fxTab('liga');
+    document.getElementById('fx-view-main')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 350);
   // Om loppet redan är kört, beräkna direkt
   fxAutoScore().catch(() => {});
 }
